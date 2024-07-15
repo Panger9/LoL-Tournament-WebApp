@@ -45,11 +45,29 @@ class UserListOperations(Resource):
     all_user = log.get_all_users()
     return all_user
   
-@lolturnier.route('/riot/get-puuid/<string:sumName>/<string:tagLine>')
+@lolturnier.route('/riot/get-playerinfo1/<string:sumName>/<string:tagLine>')
 class RiotAPIa(Resource):
     def get(self, sumName, tagLine):
         log = ApplicationLogic()
-        return log.get_puuid(sumName, tagLine)
+        return log.get_playerinfo1(sumName, tagLine)
+    
+@lolturnier.route('/riot/get-playerinfo2/<string:puuid>')
+class RiotAPIb(Resource):
+    def get(self, puuid):
+        log = ApplicationLogic()
+        return log.get_playerinfo2(puuid)
+
+@lolturnier.route('/riot/get-playerinfo3/<string:sum_id>')
+class RiotAPIc(Resource):
+    def get(self, sum_id):
+        log = ApplicationLogic()
+        return log.get_playerinfo3(sum_id)
+
+@lolturnier.route('/riot/get-playerinfo_all/<string:sumName>/<string:tagLine>')
+class RiotAPId(Resource):
+    def get(self, sumName, tagLine):
+        log = ApplicationLogic()
+        return log.get_playerinfo_all(sumName, tagLine)
   
 if __name__ == '__main__':
     app.run(debug=True)
