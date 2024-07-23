@@ -1,28 +1,38 @@
-import {Box, Typography} from '@mui/material'
+import {Box, Typography, Button, Dialog} from '@mui/material'
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 const TurnierDetails = () => {
 
-  const [userList, setUserList] = useState([])
+  let { TurnierId } = useParams();
+  const [turnier, setTurnier] = useState('')
+  const [isPending, setIsPending] = useState(false)
 
-  useEffect(() => {
-    fetch('/lolturnier/user')
-    .then((res) => res.json())
-    .then((data) => {
-      setUserList(data)
-    })
-  }, [])
+  useEffect (() => {
+
+    const fetchTurnier = async () => {
+      const res = await fetch('/lolturnier/turnier-by-id/' + TurnierId)
+      const data = await res.json()
+      setTurnier(data)
+    }
+
+    fetchTurnier()
+
+  },[])
+
+
 
   return ( 
-    <Typography color="textPrimary">
-      {userList && userList.map((e) => {
-        return (
-          <Box>
-            <Typography>Summoner Name: {e.sum_name} {e.tag_line}</Typography>
-          </Box>
-        )
-      })}
-    </Typography>
+    <Box >
+      {isPending && 'Daten werden geladen'}
+      {turnier && 
+        <Box key={turnier.id}>
+          <p>Id: {turnier.id}</p>
+          <p>Name: {turnier.name}</p>
+          <p>Teamgröße: {turnier.team_size}</p>
+        </Box>
+      }
+    </Box>
    );
 }
  

@@ -2,7 +2,7 @@ import requests
 
 class RiotAPIIntegration:
     def __init__(self):
-        self.api_key = 'RGAPI-6a2abeb3-3ede-4bae-8a49-1129080a21f0'
+        self.api_key = 'RGAPI-77ca8c7a-1eb2-469e-82d6-23cba9ef519d'
 
     def fetch_puuid(self, sumName, tagLine):
         url = f'https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{sumName}/{tagLine}?api_key={self.api_key}'

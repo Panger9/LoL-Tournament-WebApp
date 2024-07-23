@@ -1,6 +1,6 @@
 class User():
 
-  def __init__(self, id, sum_name, tag_line, token):
+  def __init__(self, id=0, sum_name='', tag_line='', token=''):
     self._id = id
     self._sum_name = sum_name
     self._tag_line = tag_line

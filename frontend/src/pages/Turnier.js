@@ -18,6 +18,7 @@ const Turnier = () => {
       {userList && userList.map((e) => {
         return (
           <Box>
+            <Typography>STANDARD TURNIERSEITE</Typography>
             <Typography>Summoner Name: {e.sum_name} {e.tag_line}</Typography>
           </Box>
         )

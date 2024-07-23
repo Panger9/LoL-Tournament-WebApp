@@ -1,29 +1,45 @@
 import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react';
 
+
 const TurnierAdd = () => {
 
-  const [userList, setUserList] = useState([])
+  const [data, setData] = useState([])
 
   useEffect(() => {
-    fetch('/lolturnier/user')
-    .then((res) => res.json())
-    .then((data) => {
-      setUserList(data)
-    })
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then((res) => res.json())
+      .then((data) => setData(data))
   }, [])
 
-  return ( 
-    <Typography color="textPrimary">
-      {userList && userList.map((e) => {
-        return (
-          <Box>
-            <Typography>Summoner Name: {e.sum_name} {e.tag_line}</Typography>
-          </Box>
-        )
-      })}
-    </Typography>
-   );
+  const renderTable = (array) => {
+
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {array.map((e) => (
+            <tr key={e.id}>
+              <td>{e.username}</td>
+              <td>{e.email}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+
+  }
+
+  return (
+    <div>
+      {data && renderTable(data)}
+    </div>
+  );
 }
- 
+
 export default TurnierAdd;

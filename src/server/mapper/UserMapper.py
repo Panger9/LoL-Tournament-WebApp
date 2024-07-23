@@ -23,12 +23,51 @@ class UserMapper(Mapper):
         return result
 
     def find_by_id(self, id):
-        # Logik zum Auslesen eines Users anhand der ID
-        pass
+        
+        cursor = self._cnx.cursor()
+        cursor.execute(f'SELECT * FROM users WHERE id={id}')
+        tuples = cursor.fetchall()
+
+        (id, sum_name, tag_line, token) = tuples[0]
+        user = User(id, sum_name, tag_line, token)
+
+        return user
+    
+    def find_by_token(self, token):
+        
+        cursor = self._cnx.cursor()
+        cursor.execute(f"SELECT * FROM users WHERE token='{token}'")
+        tuples = cursor.fetchall()
+
+        try: 
+            (id, sum_name, tag_line, token) = tuples[0]
+            user = User(id, sum_name, tag_line, token)
+            result = user
+        except IndexError:
+            result = None
+        
+        return result
+        
 
     def insert(self, user):
-        # Logik zum Einfügen eines neuen Users in die Datenbank
-        pass
+        
+        cursor = self._cnx.cursor()
+        cursor.execute("SELECT MAX(id) AS maxid FROM users ")
+        tuples = cursor.fetchall()
+
+        for (maxid) in tuples:
+            if maxid[0] is not None:
+               
+                user.set_id(maxid[0] + 1)
+            else:  
+                user.set_id(1)
+        
+        cursor.execute(f"INSERT INTO users VALUES ({user._id},'{user._sum_name}','{user._tag_line}','{user._token}')")
+        
+        self._cnx.commit()  # Bestätigen der Datenbankänderungen
+        cursor.close() 
+
+        return user
 
     def update(self, user):
         # Logik zum Aktualisieren eines vorhandenen Users

@@ -1,5 +1,5 @@
 class Turnier():
-    def __init__(self, id, name, team_size=8):
+    def __init__(self, id=0, name='', team_size=0):
         self._id = id
         self._name = name
         self._team_size = team_size
