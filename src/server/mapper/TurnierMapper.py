@@ -50,10 +50,20 @@ class TurnierMapper(Mapper):
 
         return turnier
 
-    def update(self, user):
-        # Logik zum Aktualisieren eines vorhandenen Users
-        pass
+    def update(self, turnier):
 
-    def delete(self, user):
-        # Logik zum Löschen eines Users
-        pass
+        cursor = self._cnx.cursor()        
+        cursor.execute("UPDATE turniere SET name = %s, team_size = %s WHERE id = %s",(turnier._name, turnier._team_size, turnier._id))
+        
+        self._cnx.commit()  
+        cursor.close() 
+
+        return turnier
+
+    def delete(self, id):
+        
+        cursor = self._cnx.cursor()        
+        cursor.execute(f"DELETE FROM turniere WHERE id={id}")
+        
+        self._cnx.commit()  
+        cursor.close() 

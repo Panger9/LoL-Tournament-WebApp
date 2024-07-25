@@ -54,10 +54,20 @@ class TeamMapper(Mapper):
 
         return team
 
-    def update(self, user):
-        # Logik zum Aktualisieren eines vorhandenen Users
-        pass
+    def update(self, team):
 
-    def delete(self, user):
-        # Logik zum Löschen eines Users
-        pass
+        cursor = self._cnx.cursor()        
+        cursor.execute("UPDATE teams SET turnier_id = %s WHERE id = %s",(team._turnier_id, team._id))
+        
+        self._cnx.commit()  
+        cursor.close() 
+
+        return team
+
+    def delete(self, id):
+        
+        cursor = self._cnx.cursor()        
+        cursor.execute(f"DELETE FROM teams WHERE id={id}")
+        
+        self._cnx.commit()  
+        cursor.close() 

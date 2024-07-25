@@ -47,6 +47,14 @@ class ApplicationLogic(object):
     
     with UserMapper() as mapper:
       return mapper.insert(user)
+    
+  def update_user(self, user):
+     with UserMapper() as mapper:
+        return mapper.update(user)
+     
+  def delete_user(self, id):
+     with UserMapper() as mapper:
+        return mapper.delete(id)
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # TURNIERE
@@ -64,6 +72,14 @@ class ApplicationLogic(object):
      with TurnierMapper() as mapper:
         return mapper.insert(turnier)
      
+  def update_turnier(self, turnier):
+     with TurnierMapper() as mapper:
+        return mapper.update(turnier) 
+     
+  def delete_turnier(self, id):
+     with TurnierMapper() as mapper:
+        return mapper.delete(id) 
+     
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # TEAMS
 #------------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,6 +95,14 @@ class ApplicationLogic(object):
   def create_team(self, team):
      with TeamMapper() as mapper:
         return mapper.insert(team)
+
+  def update_team(self, team):
+     with TeamMapper() as mapper:
+        return mapper.update(team) 
+     
+  def delete_team(self, id):
+     with TeamMapper() as mapper:
+        return mapper.delete(id) 
     
 
   """

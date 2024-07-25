@@ -69,6 +69,20 @@ class UserListOperations(Resource):
         else:
            return "Proposal ist leer", 500
         
+    @lolturnier.expect(user)
+    @lolturnier.marshal_with(user)
+    def put(self):
+       
+        log =ApplicationLogic()
+        proposal = User.umwandlung(api.payload)
+
+        if proposal is not None:
+           _user = log.update_user(proposal)
+           return _user, 200
+        else:
+           return "Proposal ist leer", 500
+        
+       
         
 @lolturnier.route('/user-by-id/<int:id>')
 @lolturnier.response(500, 'Server Error')
@@ -80,6 +94,10 @@ class UserOperationsId(Resource):
     _user = log.get_user_by_id(id)
 
     return _user
+  
+  def delete(self, id):
+    log = ApplicationLogic()
+    log.delete_user(id)
 
 @lolturnier.route('/user-by-token/<string:token>')
 @lolturnier.response(500, 'Server Error')
@@ -129,6 +147,19 @@ class TurnierListOperations(Resource):
            return _turnier, 200
         else:
            return "Proposal ist leer", 500
+        
+    @lolturnier.expect(turnier)
+    @lolturnier.marshal_with(turnier)
+    def put(self):
+       
+        log =ApplicationLogic()
+        proposal = Turnier.umwandlung(api.payload)
+
+        if proposal is not None:
+           _turnier = log.update_turnier(proposal)
+           return _turnier, 200
+        else:
+           return "Proposal ist leer", 500
       
       
 @lolturnier.route('/turnier-by-id/<int:id>')
@@ -139,6 +170,11 @@ class TurnierOperations(Resource):
    def get(self, id):
       log = ApplicationLogic()
       response = log.get_turnier_by_id(id)
+      return response
+   
+   def delete(self, id):
+      log = ApplicationLogic()
+      response = log.delete_turnier(id)
       return response
    
 #------------------------------------------------------------------------------------------------------------------------------------------------
@@ -166,6 +202,19 @@ class TeamListOperations(Resource):
            return _team, 200
         else:
            return "Proposal ist leer", 500
+
+    @lolturnier.expect(team)
+    @lolturnier.marshal_with(team)
+    def put(self):
+       
+        log =ApplicationLogic()
+        proposal = Team.umwandlung(api.payload)
+
+        if proposal is not None:
+           _team = log.update_team(proposal)
+           return _team, 200
+        else:
+           return "Proposal ist leer", 500
         
 @lolturnier.route('/team-by-id/<int:id>')
 @lolturnier.response(500, 'Server Error')
@@ -176,6 +225,11 @@ class TeamOperations(Resource):
       log = ApplicationLogic()
       response = log.get_team_by_id(id)
       return response
+
+    def delete(self, id):
+        log = ApplicationLogic()
+        response = log.delete_team(id)
+        return response
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # Anfragen an die Riot API

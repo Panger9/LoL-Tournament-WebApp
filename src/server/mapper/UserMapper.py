@@ -64,15 +64,27 @@ class UserMapper(Mapper):
         
         cursor.execute(f"INSERT INTO users VALUES ({user._id},'{user._sum_name}','{user._tag_line}','{user._token}')")
         
-        self._cnx.commit()  # Bestätigen der Datenbankänderungen
+        self._cnx.commit()  
         cursor.close() 
 
         return user
 
     def update(self, user):
-        # Logik zum Aktualisieren eines vorhandenen Users
-        pass
 
-    def delete(self, user):
-        # Logik zum Löschen eines Users
-        pass
+        cursor = self._cnx.cursor()        
+        cursor.execute("UPDATE users SET sum_name = %s, tag_line = %s WHERE id = %s",(user._sum_name, user._tag_line, user._id))
+        
+        self._cnx.commit()  
+        cursor.close() 
+
+        return user
+
+    def delete(self, id):
+        
+        cursor = self._cnx.cursor()        
+        cursor.execute(f"DELETE FROM users WHERE id={id}")
+        
+        self._cnx.commit()  
+        cursor.close() 
+
+        
