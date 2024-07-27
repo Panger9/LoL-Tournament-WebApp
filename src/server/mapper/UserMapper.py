@@ -47,6 +47,46 @@ class UserMapper(Mapper):
             result = None
         
         return result
+
+    def find_by_turnier(self, turnier_id):
+        
+        cursor = self._cnx.cursor()
+
+        cursor.execute(f"""SELECT users.id, users.sum_name, users.tag_line, users.token
+                            FROM user_turnier
+                            JOIN users ON user_turnier.user_id = users.id
+                            WHERE user_turnier.turnier_id = {turnier_id}""")
+        tuples = cursor.fetchall()
+        result = []
+
+        for (id,sum_name, tag_line, token) in tuples:
+            user = User(id, sum_name, tag_line, token)
+            result.append(user)
+
+        self._cnx.commit()  
+        cursor.close()  
+
+        return result
+
+    def find_by_team(self, team_id):
+        
+        cursor = self._cnx.cursor()
+
+        cursor.execute(f"""SELECT users.id, users.sum_name, users.tag_line, users.token
+                            FROM user_team
+                            JOIN users ON user_team.user_id = users.id
+                            WHERE user_team.team_id = {team_id}""")
+        tuples = cursor.fetchall()
+        result = []
+
+        for (id,sum_name, tag_line, token) in tuples:
+            user = User(id, sum_name, tag_line, token)
+            result.append(user)
+
+        self._cnx.commit()  
+        cursor.close()  
+
+        return result
         
 
     def insert(self, user):

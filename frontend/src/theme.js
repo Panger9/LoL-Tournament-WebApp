@@ -1,4 +1,8 @@
 import { createTheme } from "@mui/material";
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 const theme = createTheme({
     palette: {
@@ -16,10 +20,12 @@ const theme = createTheme({
             paper: '#000000', // Schwarz auch für Elemente, die auf dem Hintergrund hervorstechen sollen
         },
         text: {
-            primary: "#ffffff", // Weißer Text für den Hauptinhalt
-            secondary: "#d1d1d1", // Helles Grau für sekundären Text, bietet einen sanften Kontrast
+            primary: "#F8F8F8", // Weißer Text für den Hauptinhalt
+            secondary: "rgba(255,255,255,0.65)", // Helles Grau für sekundären Text, bietet einen sanften Kontrast
         },
     },
+    
+    
     breakpoints: {
         values: {
             xs: 0,

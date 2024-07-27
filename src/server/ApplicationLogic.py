@@ -5,6 +5,8 @@ from server.bo.Turnier import Turnier
 from server.mapper.UserMapper import UserMapper
 from server.mapper.TeamMapper import TeamMapper
 from server.mapper.TurnierMapper import TurnierMapper
+from server.mapper.UserTurnierMapper import UserTurnierMapper
+from server.mapper.UserTeamMapper import UserTeamMapper
 
 from server.ApiIntegration.RiotApi import RiotAPIIntegration
 
@@ -39,6 +41,14 @@ class ApplicationLogic(object):
   def get_user_by_token(self, token):
     with UserMapper() as mapper:
       return mapper.find_by_token(token)
+  
+  def get_user_by_turnier(self, turnier_id):
+     with UserMapper() as mapper:
+        return mapper.find_by_turnier(turnier_id)
+     
+  def get_user_by_team(self, team_id):
+     with UserMapper() as mapper:
+        return mapper.find_by_team(team_id)
     
   def create_user(self, user):
     log = ApplicationLogic()
@@ -103,7 +113,39 @@ class ApplicationLogic(object):
   def delete_team(self, id):
      with TeamMapper() as mapper:
         return mapper.delete(id) 
-    
+     
+  
+#------------------------------------------------------------------------------------------------------------------------------------------------
+# USER-TURNIER
+#------------------------------------------------------------------------------------------------------------------------------------------------
+
+  def get_all_user_turnier_entries(self):
+     with UserTurnierMapper() as mapper:
+        return mapper.find_all()
+
+  def create_user_turnier_entry(self, user_id, turnier_id):
+     with UserTurnierMapper() as mapper:
+        return mapper.insert(user_id, turnier_id)
+     
+  def delete_user_from_turnier(self, user_id, turnier_id):
+     with UserTurnierMapper() as mapper:
+        return mapper.delete(user_id, turnier_id)
+     
+#------------------------------------------------------------------------------------------------------------------------------------------------
+# USER-TEAM
+#------------------------------------------------------------------------------------------------------------------------------------------------
+
+  def get_all_user_team_entries(self):
+     with UserTeamMapper() as mapper:
+        return mapper.find_all()
+
+  def create_user_team_entry(self, user_id, team_id):
+     with UserTeamMapper() as mapper:
+        return mapper.insert(user_id, team_id)
+     
+  def delete_user_from_team(self, user_id, team_id):
+     with UserTeamMapper() as mapper:
+        return mapper.delete(user_id, team_id)
 
   """
   Im folgenden werden alle Funktionen aufgeführt, welche Daten von der Riot Api fetchen.

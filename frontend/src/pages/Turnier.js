@@ -6,7 +6,7 @@ const Turnier = () => {
   const [userList, setUserList] = useState([])
 
   useEffect(() => {
-    fetch('/lolturnier/user')
+    fetch('/lolturnier/turnier')
     .then((res) => res.json())
     .then((data) => {
       setUserList(data)
@@ -14,16 +14,16 @@ const Turnier = () => {
   }, [])
 
   return ( 
-    <Typography color="textPrimary">
+    <Box color="textPrimary">
       {userList && userList.map((e) => {
         return (
           <Box>
             <Typography>STANDARD TURNIERSEITE</Typography>
-            <Typography>Summoner Name: {e.sum_name} {e.tag_line}</Typography>
+            <Typography>Turnier-Info: {e.name} {e.team_size}</Typography>
           </Box>
         )
       })}
-    </Typography>
+    </Box>
    );
 }
  
