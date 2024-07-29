@@ -9,30 +9,62 @@ import TurnierAdd from './pages/TurnierAdd.js';
 import MeineTurniere from './pages/MeineTurniere.js';
 import { Box } from '@mui/material';
 import { createContext } from 'react';
+import RegisterDialog from './components/RegisterDialog.js';
 
-export const Context = createContext();
+export const UserContext = createContext();
 
 function App() {
 
-  const [signedIn, setSignedIn] = useState(null);
-  const [sumName, setSumName] = useState('')
-  const [tagLine, setTagline] = useState('')
-  const [tier, setTier] = useState('')
-  const [rank, setRank] = useState('')
-  const [level, setLevel] = useState('')
-  const [iconId, setIconId] = useState('')
+  const [user, setUser] = useState({
+    signedIn: null,
+    sumName: '',
+    tagLine: '',
+    tier: '',
+    level: '',
+    profileIconId: '',
+    token: ''
+  })
+
+
+  useEffect(() => {
+
+    const autoLogin = async () => {
+
+      const token = localStorage.getItem('tournament_token')
+      const res = await fetch('/lolturnier/user-login/' + token)
+
+      if (!res.ok){
+        console.log('Kein user erkannt')
+      }
+      else {
+        const data = await res.json()
+        setUser((prevState) => ({
+          ...prevState,
+          sumName: data.gameName,
+          tagLine: data.tagLine,
+          tier: data.tier,
+          level: data.summonerLevel,
+          profileIconId: data.profileIconId,
+          signedIn: true,
+          token: token
+        }))
+      }
+    }
+    autoLogin()
+  },[])
+
+
 
 
   return (
-    <Context.Provider value={[signedIn, setSignedIn, sumName, setSumName, tagLine, setTagline, tier, setTier,
-      rank, setRank, level, setLevel, iconId, setIconId ]}>
+    <UserContext.Provider value={user}>
     <Router>
       <Box sx={{
-        cursor: "url(/frontend/src/images/cursor.png), auto",
         width: "100vw",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
+        alignItems:"center"
       }}>
 
         <Header sx={{}}></Header>
@@ -43,12 +75,13 @@ function App() {
             <Route path={'/create'} element={<TurnierAdd />} />
             <Route path={'/turniere/:TurnierId'} element={<TurnierDetails />} />
             <Route path={'/my-tournaments'} element={<MeineTurniere />} />
+            <Route path={'/register'} element={<RegisterDialog />} />
           </Routes>
         </Box>
 
       </Box>
     </Router>
-    </Context.Provider>
+    </UserContext.Provider>
 
   );
 }

@@ -1,6 +1,7 @@
-import {Box, Typography, Button, Dialog} from '@mui/material'
+import {Box, Typography, Button, Dialog, Grid, Paper} from '@mui/material'
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Playerinfo from '../components/PlayerInfo'
 
 const TurnierDetails = () => {
 
@@ -11,7 +12,7 @@ const TurnierDetails = () => {
   useEffect (() => {
 
     const fetchTurnier = async () => {
-      const res = await fetch('/lolturnier/turnier-by-id/' + TurnierId)
+      const res = await fetch(`/lolturnier/user-by-team-and-turnier/${TurnierId}`)
       const data = await res.json()
       setTurnier(data)
     }
@@ -22,18 +23,24 @@ const TurnierDetails = () => {
 
 
 
+
+
   return ( 
-    <Box >
+    <Grid container  spacing={2} gap={5}>
       {isPending && 'Daten werden geladen'}
-      {turnier && 
-        <Box key={turnier.id}>
-          <p>Id: {turnier.id}</p>
-          <p>Name: {turnier.name}</p>
-          <p>Teamgröße: {turnier.team_size}</p>
-        </Box>
-      }
-    </Box>
-   );
+      {turnier && turnier.map((team, teamIndex) => (
+        <Paper item key={teamIndex} sx={{padding:"20px 50px", backgroundColor:"#141414", display:"flex", flexDirection:"column", gap:"15px", borderRadius:"18px"}}>
+          Team {teamIndex + 1}
+          {team.map((user, userIndex) => (
+            <Box key={userIndex}>
+              <Playerinfo name={user.gameName} tag={user.tagLine} tier={user.tier} level={user.summonerLevel} profileIconId={user.profileIconId}></Playerinfo>
+            </Box>
+          ))}
+          <Button variant='contained' sx={{boxShadow:"none", ':hover':{boxShadow:"none"}, ':focus':{boxShadow:"none"}}}>Team beitreten</Button>
+        </Paper>
+      ))}
+    </Grid>
+);
 }
  
 export default TurnierDetails;

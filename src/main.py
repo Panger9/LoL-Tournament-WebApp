@@ -95,10 +95,6 @@ class UserOperationsId(Resource):
 
     return _user
   
-  def delete(self, id):
-    log = ApplicationLogic()
-    log.delete_user(id)
-
 @lolturnier.route('/user-by-token/<string:token>')
 @lolturnier.response(500, 'Server Error')
 class UserOperationsToken(Resource):
@@ -108,6 +104,10 @@ class UserOperationsToken(Resource):
     log = ApplicationLogic()
     _user = log.get_user_by_token(token)
     return _user
+  
+  def delete(self, token):
+    log = ApplicationLogic()
+    log.delete_user(token)
   
 @lolturnier.route('/user-by-turnier-id/<int:id>')
 @lolturnier.response(500, 'Server Error')
@@ -131,6 +131,17 @@ class UserOperationsTeamId(Resource):
 
     return _user
   
+@lolturnier.route('/user-by-team-and-turnier/<int:turnier_id>')
+@lolturnier.response(500, 'Server Error')
+class UserOperationsTeamId(Resource):
+
+
+  def get(self, turnier_id):
+    log = ApplicationLogic()
+    all_user = log.get_user_by_team_and_turnier(turnier_id)
+
+    return all_user
+
 @lolturnier.route('/user-login/<string:token>')
 @lolturnier.response(500, 'Server Error')
 class UserOperationsLogin(Resource):
@@ -249,6 +260,21 @@ class TeamOperations(Resource):
         log = ApplicationLogic()
         response = log.delete_team(id)
         return response
+
+@lolturnier.route('/team-by-turnier-id/<int:turnier_id>')
+@lolturnier.response(500, 'Server Error')
+class TeamOperationsByTurnier(Resource):
+   
+    def get(self, turnier_id):
+      log = ApplicationLogic()
+      response = log.get_team_by_turnier_id(turnier_id)
+      return response
+
+    def delete(self, turnier_id):
+        log = ApplicationLogic()
+        response = log.delete_teams_from_turnier(turnier_id)
+        return response
+
     
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # USER-TURNIER
@@ -331,6 +357,12 @@ class RiotAPId(Resource):
     def get(self, sumName, tagLine):
         log = ApplicationLogic()
         return log.get_playerinfo_all(sumName, tagLine)
+    
+@lolturnier.route('/riot/get-playerinfo_important/<string:sumName>/<string:tagLine>')
+class RiotAPIe(Resource):
+    def get(self, sumName, tagLine):
+        log = ApplicationLogic()
+        return log.get_playerinfo_important(sumName, tagLine)
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # Anfragen an die Riot API und die Datenbank

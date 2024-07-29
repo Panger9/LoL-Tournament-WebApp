@@ -1,24 +1,28 @@
 import {Box, Typography} from '@mui/material'
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Turnier = () => {
 
-  const [userList, setUserList] = useState([])
+
+  const Navigate = useNavigate()
+  const [turniere, setturniere] = useState([])
 
   useEffect(() => {
     fetch('/lolturnier/turnier')
     .then((res) => res.json())
     .then((data) => {
-      setUserList(data)
+      setturniere(data)
     })
   }, [])
 
+
   return ( 
     <Box color="textPrimary">
-      {userList && userList.map((e) => {
+      {turniere && turniere.map((e) => {
         return (
-          <Box>
-            <Typography>STANDARD TURNIERSEITE</Typography>
+          <Box onClick={() => {Navigate(`/turniere/${e.id}`)}}>
+
             <Typography>Turnier-Info: {e.name} {e.team_size}</Typography>
           </Box>
         )

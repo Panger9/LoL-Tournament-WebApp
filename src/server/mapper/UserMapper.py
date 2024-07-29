@@ -119,12 +119,13 @@ class UserMapper(Mapper):
 
         return user
 
-    def delete(self, id):
+    def delete(self, token):
         
         cursor = self._cnx.cursor()        
-        cursor.execute(f"DELETE FROM users WHERE id={id}")
+        cursor.execute(f"DELETE FROM users WHERE token='{token}'")
         
         self._cnx.commit()  
         cursor.close() 
+
 
         

@@ -1,16 +1,38 @@
 import {Box, Typography, AppBar, Button} from '@mui/material'
 import Playerinfo from './PlayerInfo';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, Navigate, useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { UserContext } from '../App';
+import ReigsterDialog from './RegisterDialog'
+import CustomDialog from './CustomDialog';
 
 const Header = () => {
 
   const location = useLocation();
+  const user = useContext(UserContext)
+  const Navigate = useNavigate()
+
+  const [openDialog, setOpenDialog] = useState(false)
 
   const tabs = [
     { label: 'Browse', path: '/turniere'},
     { label: 'Erstellen', path: '/create'},
     { label: 'Meine Turniere', path: '/MeineTurniere' },
   ];
+
+  const handleDisconnectAccount = async () => {
+    console.log(user)
+    console.log(user.token)
+    const res = await fetch(`/lolturnier/user-by-token/${user.token}`, {
+      method: "DELETE"
+    })
+    localStorage.removeItem('tournament_token')
+    Navigate('/turniere')
+    window.location.reload()
+
+  }
+
+
 
 
   return (
@@ -36,8 +58,27 @@ const Header = () => {
       ))}
       </Box>
 
-      <Playerinfo name='Sir Panger' tag="EUW" tier="diamond 1" level="442"></Playerinfo>
+      <Box sx={{display:"flex", gap:"10px"}}>
+        {user.signedIn ? 
+        <Button onClick={() => {setOpenDialog(true)}}>Verbindung trennen</Button>
+        : 
+        <Link to='/register'>
+          <Button>Registrieren</Button>
+        </Link>
+
+        }
+        {user.sumName ? <Playerinfo name={user.sumName} tag={user.tagLine} tier={user.tier} level={user.level} profileIconId={user.profileIconId}></Playerinfo> : ''}
+      </Box>
       </AppBar>
+
+      <CustomDialog
+        open={openDialog}
+        message="ACHTUNG: Damit werden sämtliche Einträge aus Teams und Turnieren gelöscht"
+        title="Verbindung trennen"
+        handleAccept={handleDisconnectAccount}
+        handleClose={() => setOpenDialog(false)}
+        type="NoInfo"
+      />
       
     </Box>
 

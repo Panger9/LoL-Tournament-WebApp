@@ -34,6 +34,22 @@ class TeamMapper(Mapper):
         cursor.close()
 
         return result
+    
+    def find_by_turnier(self, turnier_id):
+
+        cursor = self._cnx.cursor()
+        cursor.execute(f"SELECT * FROM teams WHERE turnier_id={turnier_id}")
+        tuples = cursor.fetchall()
+        result = []
+
+        for (id, turnier_id) in tuples:
+            team = Team(id, turnier_id)
+            result.append(team)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
 
     def insert(self, team):
         cursor = self._cnx.cursor()
@@ -68,6 +84,14 @@ class TeamMapper(Mapper):
         
         cursor = self._cnx.cursor()        
         cursor.execute(f"DELETE FROM teams WHERE id={id}")
+        
+        self._cnx.commit()  
+        cursor.close() 
+
+    def delete_from_turnier(self, turnier_id):
+        
+        cursor = self._cnx.cursor()        
+        cursor.execute(f"DELETE FROM teams WHERE turnier_id={turnier_id}")
         
         self._cnx.commit()  
         cursor.close() 

@@ -15,6 +15,7 @@ import string, random
 class ApplicationLogic(object):
   def __init__(self):
     self.riot_api = RiotAPIIntegration()
+    
 
   def create_token(self):
       # Erstellt eine Zeichenfolge, die aus Groß- und Kleinbuchstaben sowie Zahlen besteht
@@ -49,6 +50,21 @@ class ApplicationLogic(object):
   def get_user_by_team(self, team_id):
      with UserMapper() as mapper:
         return mapper.find_by_team(team_id)
+  
+  def get_user_by_team_and_turnier(self, turnier_id):
+      result = []
+      all_teams = self.get_team_by_turnier_id(turnier_id)
+      for team in all_teams:
+          team_users = []
+          users = self.get_user_by_team(team._id)
+          for user in users:
+              user_info = self.get_playerinfo_important(user._sum_name, user._tag_line)
+              team_users.append(user_info)
+          result.append(team_users)
+      return result
+
+
+
     
   def create_user(self, user):
     log = ApplicationLogic()
@@ -62,9 +78,9 @@ class ApplicationLogic(object):
      with UserMapper() as mapper:
         return mapper.update(user)
      
-  def delete_user(self, id):
+  def delete_user(self, token):
      with UserMapper() as mapper:
-        return mapper.delete(id)
+        return mapper.delete(token)
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # TURNIERE
@@ -101,6 +117,10 @@ class ApplicationLogic(object):
   def get_team_by_id(self, id):
     with TeamMapper() as mapper:
       return mapper.find_by_id(id)
+  
+  def get_team_by_turnier_id(self, turnier_id):
+     with TeamMapper() as mapper:
+        return mapper.find_by_turnier(turnier_id)
     
   def create_team(self, team):
      with TeamMapper() as mapper:
@@ -113,6 +133,10 @@ class ApplicationLogic(object):
   def delete_team(self, id):
      with TeamMapper() as mapper:
         return mapper.delete(id) 
+     
+  def delete_teams_from_turnier(self, turnier_id):
+     with TeamMapper() as mapper:
+        return mapper.delete_from_turnier(turnier_id) 
      
   
 #------------------------------------------------------------------------------------------------------------------------------------------------
@@ -171,24 +195,60 @@ class ApplicationLogic(object):
     return response
   
   def get_playerinfo_all(self, sumName, tagLine):
+      log = ApplicationLogic()
+      response_all = {}
+
+      # Erstes Response-Dictionary unverändert hinzufügen
+      response1 = log.get_playerinfo1(sumName, tagLine)
+      response_all.update(response1)
+
+      # Zweites Response-Dictionary filtern und hinzufügen
+      response2 = log.get_playerinfo2(response1['puuid'])
+      filtered_response2 = {key: response2[key] for key in ['id', 'profileIconId', 'summonerLevel']}
+      response_all.update(filtered_response2)
+
+      # Drittes Response-Dictionary (Liste von Dictionaries) filtern und hinzufügen
+      response3 = log.get_playerinfo3(response2['id'])
+      keys_to_keep = ['queueType', 'tier', 'rank', 'leaguePoints', 'wins', 'losses']
+      filtered_response3 = [{key: item[key] for key in keys_to_keep if key in item} for item in response3]
+      response_all['rankedInfo'] = filtered_response3
+
+      return response_all
+
+  def get_playerinfo_important(self, sumName, tagLine):
     log = ApplicationLogic()
-    response_all = []
+    response_all = {}
 
     # Erstes Response-Dictionary unverändert hinzufügen
     response1 = log.get_playerinfo1(sumName, tagLine)
-    response_all.append(response1)
+    response_all.update(response1)
 
     # Zweites Response-Dictionary filtern und hinzufügen
     response2 = log.get_playerinfo2(response1['puuid'])
     filtered_response2 = {key: response2[key] for key in ['id', 'profileIconId', 'summonerLevel']}
-    response_all.append(filtered_response2)
+    response_all.update(filtered_response2)
 
     # Drittes Response-Dictionary (Liste von Dictionaries) filtern und hinzufügen
     response3 = log.get_playerinfo3(response2['id'])
     keys_to_keep = ['queueType', 'tier', 'rank', 'leaguePoints', 'wins', 'losses']
+    
+    # Suche nach dem gewünschten queueType
+    ranked_info = None
     for item in response3:
-        filtered_item = {key: item[key] for key in keys_to_keep if key in item}
-        response_all.append(filtered_item)
+        if item.get('queueType') == 'RANKED_SOLO_5x5':
+            ranked_info = {key: item[key] for key in keys_to_keep if key in item}
+            break
+    
+    # Falls "RANKED_SOLO_5x5" nicht gefunden wurde, nach "RANKED_FLEX_SR" suchen
+    if ranked_info is None:
+        for item in response3:
+            if item.get('queueType') == 'RANKED_FLEX_SR':
+                ranked_info = {key: item[key] for key in keys_to_keep if key in item}
+                break
+    
+    # Falls ein passendes Dictionary gefunden wurde, hinzufügen
+    if ranked_info:
+        response_all.update(ranked_info)
 
     return response_all
   
@@ -207,7 +267,7 @@ class ApplicationLogic(object):
       else:
           try:
               # Versucht, Spielerinformationen zu erhalten
-              player_info = log.get_playerinfo_all(_user._sum_name, _user._tag_line)
+              player_info = log.get_playerinfo_important(_user._sum_name, _user._tag_line)
               if player_info:
                   # Fall 3: Der User ist in der Datenbank und die Anfrage hat funktioniert
                   response = (player_info, 200)  # 200 OK
@@ -219,6 +279,9 @@ class ApplicationLogic(object):
               response = ('Token vorhanden, Anfrage an Riot fehlgeschlagen', 502)  # 502 Bad Gateway
 
       return response
+  
+def register(self):
+   pass
 
     
 
