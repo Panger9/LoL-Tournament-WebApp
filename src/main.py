@@ -265,6 +265,7 @@ class TeamOperations(Resource):
 @lolturnier.response(500, 'Server Error')
 class TeamOperationsByTurnier(Resource):
    
+    @lolturnier.marshal_list_with(team)
     def get(self, turnier_id):
       log = ApplicationLogic()
       response = log.get_team_by_turnier_id(turnier_id)
@@ -293,6 +294,11 @@ class UserTurnierListOperations(Resource):
 @lolturnier.response(500, 'Server Error')
 class UserTurnierOperations(Resource):
 
+    def get(self, user_id, turnier_id):
+       log = ApplicationLogic()
+       entry = log.get_user_turnier_entry_by_ids(user_id, turnier_id)
+       return entry
+
     def post(self, user_id, turnier_id):
         log = ApplicationLogic()
         all_user = log.create_user_turnier_entry(user_id, turnier_id)
@@ -302,6 +308,15 @@ class UserTurnierOperations(Resource):
        log = ApplicationLogic()
        u = log.delete_user_from_turnier(user_id, turnier_id)
        return u
+    
+@lolturnier.route('/user-turnier-by-user-id/<int:user_id>')
+@lolturnier.response(500, 'Server Error')
+class UserTurnierListOperationsByUser(Resource):
+
+    def get(self, user_id):
+        log = ApplicationLogic()
+        u = log.get_user_turnier_entries_by_user_id(user_id)
+        return u
     
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # USER-TEAM
@@ -320,6 +335,11 @@ class UserTeamListOperations(Resource):
 @lolturnier.response(500, 'Server Error')
 class UserTeamOperations(Resource):
 
+    def get(self, user_id, team_id):
+       log = ApplicationLogic()
+       entry = log.get_user_team_entry_by_ids(user_id, team_id)
+       return entry
+
     def post(self, user_id, team_id):
         log = ApplicationLogic()
         all_user = log.create_user_team_entry(user_id, team_id)
@@ -329,6 +349,23 @@ class UserTeamOperations(Resource):
        log = ApplicationLogic()
        u = log.delete_user_from_team(user_id, team_id)
        return u
+
+#------------------------------------------------------------------------------------------------------------------------------------------------
+# USER-TEAM + USER-TURNIER
+#------------------------------------------------------------------------------------------------------------------------------------------------
+
+@lolturnier.route('/user-team-turnier/<int:user_id>/<int:team_id>/<int:turnier_id>')
+@lolturnier.response(500, 'Server Error')
+class UserTeamTurnierOperations(Resource):
+
+    def delete(self, user_id, team_id, turnier_id):
+        log = ApplicationLogic()
+        all_deletes = log.remove_user_from_team_and_turnier(user_id, team_id, turnier_id)
+        return all_deletes
+    
+    def post(self, user_id, team_id, turnier_id):
+       log = ApplicationLogic()
+       return log.add_user_to_team(user_id, team_id, turnier_id)
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # Anfragen an die Riot API

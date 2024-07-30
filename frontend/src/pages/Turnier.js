@@ -24,6 +24,7 @@ const Turnier = () => {
           <Box onClick={() => {Navigate(`/turniere/${e.id}`)}}>
 
             <Typography>Turnier-Info: {e.name} {e.team_size}</Typography>
+            
           </Box>
         )
       })}

@@ -20,8 +20,27 @@ class UserTeamMapper(Mapper):
         
         return result
 
-    def find_by_id(self, id):
+    def find_by_id(self):
         pass
+
+    def find_by_ids(self, user_id, team_id):
+        cursor = self._cnx.cursor()
+        query = '''
+            SELECT user_id, team_id
+            FROM user_team
+            WHERE user_id=%s AND team_id=%s
+        '''
+        cursor.execute(query, (user_id, team_id))
+        row = cursor.fetchone()
+        cursor.close()
+
+        # Umwandlung des Abfrageergebnisses in ein Dictionary
+        if row:
+            result = {'user_id': row[0], 'team_id': row[1]}
+        else:
+            result = None
+
+        return result
 
     def insert(self, user_id, team_id):
         cursor = self._cnx.cursor()

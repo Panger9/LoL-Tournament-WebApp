@@ -55,7 +55,7 @@ class ApplicationLogic(object):
       result = []
       all_teams = self.get_team_by_turnier_id(turnier_id)
       for team in all_teams:
-          team_users = []
+          team_users = [{'team_id': team._id}]
           users = self.get_user_by_team(team._id)
           for user in users:
               user_info = self.get_playerinfo_important(user._sum_name, user._tag_line)
@@ -146,6 +146,14 @@ class ApplicationLogic(object):
   def get_all_user_turnier_entries(self):
      with UserTurnierMapper() as mapper:
         return mapper.find_all()
+  
+  def get_user_turnier_entries_by_user_id(self, user_id):
+     with UserTurnierMapper() as mapper:
+        return mapper.find_by_user_id(user_id)
+     
+  def get_user_turnier_entry_by_ids(self, user_id, turnier_id):
+     with UserTurnierMapper() as mapper:
+        return mapper.find_by_ids(user_id, turnier_id)
 
   def create_user_turnier_entry(self, user_id, turnier_id):
      with UserTurnierMapper() as mapper:
@@ -162,6 +170,10 @@ class ApplicationLogic(object):
   def get_all_user_team_entries(self):
      with UserTeamMapper() as mapper:
         return mapper.find_all()
+     
+  def get_user_team_entry_by_ids(self, user_id, team_id):
+     with UserTeamMapper() as mapper:
+        return mapper.find_by_ids(user_id, team_id)
 
   def create_user_team_entry(self, user_id, team_id):
      with UserTeamMapper() as mapper:
@@ -170,6 +182,47 @@ class ApplicationLogic(object):
   def delete_user_from_team(self, user_id, team_id):
      with UserTeamMapper() as mapper:
         return mapper.delete(user_id, team_id)
+     
+#------------------------------------------------------------------------------------------------------------------------------------------------
+# USER-TEAM + USER-TURNIER
+#------------------------------------------------------------------------------------------------------------------------------------------------
+
+  def remove_user_from_team_and_turnier(self, user_id, team_id, turnier_id):
+     result = []
+     response1 = self.delete_user_from_team(user_id, team_id)
+     response2 = self.delete_user_from_turnier(user_id, turnier_id)
+     
+     result.append(response1)
+     result.append(response2)
+     return result
+  
+  def add_user_to_team(self, user_id, team_id, turnier_id):
+     
+     isInTurnier = self.get_user_turnier_entry_by_ids(user_id, turnier_id)
+     deleted_entries =  'nichts gelöscht'
+     added_entries = []
+
+     if isInTurnier is not None:
+       
+       all_teams = self.get_team_by_turnier_id(turnier_id)
+
+       for team in all_teams:
+          entry = self.get_user_team_entry_by_ids(user_id, team._id)
+          if entry is not None:
+             deleted_entries = self.remove_user_from_team_and_turnier(user_id, entry['team_id'], turnier_id)
+     
+     user_team = self.create_user_team_entry(user_id, team_id)
+     user_turnier = self.create_user_turnier_entry(user_id, turnier_id)
+     added_entries.append(user_team)
+     added_entries.append(user_turnier)
+        
+     return ['DELETED: ',deleted_entries, 'ADDED', added_entries]
+  
+  def is_in_team_from_turnier(self, user_id, team_id, turnier_id):
+     all_teams = self.get_team_by_turnier_id(turnier_id)
+
+
+     return
 
   """
   Im folgenden werden alle Funktionen aufgeführt, welche Daten von der Riot Api fetchen.
@@ -260,6 +313,7 @@ class ApplicationLogic(object):
   def login(self, token):
       log = ApplicationLogic()
       _user = log.get_user_by_token(token)
+      
 
       if _user is None:
           # Fall 1: Der User ist der Datenbank unbekannt
@@ -267,7 +321,9 @@ class ApplicationLogic(object):
       else:
           try:
               # Versucht, Spielerinformationen zu erhalten
+              user_id = _user._id
               player_info = log.get_playerinfo_important(_user._sum_name, _user._tag_line)
+              player_info['user_id'] = user_id
               if player_info:
                   # Fall 3: Der User ist in der Datenbank und die Anfrage hat funktioniert
                   response = (player_info, 200)  # 200 OK

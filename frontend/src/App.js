@@ -17,6 +17,7 @@ function App() {
 
   const [user, setUser] = useState({
     signedIn: null,
+    user_id: '',
     sumName: '',
     tagLine: '',
     tier: '',
@@ -38,8 +39,10 @@ function App() {
       }
       else {
         const data = await res.json()
+        console.log(data)
         setUser((prevState) => ({
           ...prevState,
+          user_id: data.user_id,
           sumName: data.gameName,
           tagLine: data.tagLine,
           tier: data.tier,
