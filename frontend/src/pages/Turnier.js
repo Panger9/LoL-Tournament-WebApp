@@ -1,6 +1,7 @@
 import {Box, Typography} from '@mui/material'
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import TurnierListe from '../components/TurnierListe';
 
 const Turnier = () => {
 
@@ -18,17 +19,7 @@ const Turnier = () => {
 
 
   return ( 
-    <Box color="textPrimary">
-      {turniere && turniere.map((e) => {
-        return (
-          <Box onClick={() => {Navigate(`/turniere/${e.id}`)}}>
-
-            <Typography>Turnier-Info: {e.name} {e.team_size}</Typography>
-            
-          </Box>
-        )
-      })}
-    </Box>
+    <TurnierListe liste={turniere}></TurnierListe>
    );
 }
  

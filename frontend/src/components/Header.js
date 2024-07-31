@@ -17,7 +17,7 @@ const Header = () => {
   const tabs = [
     { label: 'Browse', path: '/turniere'},
     { label: 'Erstellen', path: '/create'},
-    { label: 'Meine Turniere', path: '/MeineTurniere' },
+    { label: 'Meine Turniere', path: '/my-tournaments' },
   ];
 
   const handleDisconnectAccount = async () => {
@@ -67,7 +67,7 @@ const Header = () => {
         </Link>
 
         }
-        {user.sumName ? <Playerinfo name={user.sumName} tag={user.tagLine} tier={user.tier} level={user.level} profileIconId={user.profileIconId}></Playerinfo> : ''}
+        {user.sumName ? <Box sx={{width:"300px"}}><Playerinfo name={user.sumName} tag={user.tagLine} tier={user.tier} level={user.level} profileIconId={user.profileIconId}></Playerinfo></Box> : ''}
       </Box>
       </AppBar>
 

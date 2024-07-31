@@ -46,6 +46,7 @@ function App() {
           sumName: data.gameName,
           tagLine: data.tagLine,
           tier: data.tier,
+          rank: data.rank,
           level: data.summonerLevel,
           profileIconId: data.profileIconId,
           signedIn: true,

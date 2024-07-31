@@ -10,15 +10,15 @@ const RankMean = (rank) => {
   }
   if (!rank.length < 1){
     const rankToPoints = [
-      'iron 4', 'iron 3', 'iron 2', 'iron 1',
-      'bronze 4', 'bronze 3', 'bronze 2', 'bronze 1',
-      'silver 4', 'silver 3', 'silver 2', 'silver 1',
-      'gold 4', 'gold 3', 'gold 2', 'gold 1',
-      'platinum 4', 'platinum 3', 'platinum 2', 'platinum 1',
-      'emerald 4', 'emerald 3', 'emerald 2', 'emerald 1',
-      'diamond 4', 'diamond 3', 'diamond 2', 'diamond 1',
-      'master', 'grandmaster', 'challenger'
-    ]
+      'IRON IV', 'IRON III', 'IRON II', 'IRON I',
+      'BRONZE IV', 'BRONZE III', 'BRONZE II', 'BRONZE I',
+      'SILVER IV', 'SILVER III', 'SILVER II', 'SILVER I',
+      'GOLD IV', 'GOLD III', 'GOLD II', 'GOLD I',
+      'PLATINUM IV', 'PLATINUM III', 'PLATINUM II', 'PLATINUM I',
+      'EMERALD IV', 'EMERALD III', 'EMERALD II', 'EMERALD I',
+      'DIAMOND IV', 'DIAMOND III', 'DIAMOND II', 'DIAMOND I',
+      'MASTER', 'GRANDMASTER', 'CHALLENGER'
+    ];
   
     let allPoints = 0
   

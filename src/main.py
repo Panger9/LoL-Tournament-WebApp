@@ -207,6 +207,15 @@ class TurnierOperations(Resource):
       response = log.delete_turnier(id)
       return response
    
+@lolturnier.route('/turnier-by-user-id/<int:user_id>')
+@lolturnier.response(500, 'server error')
+class TurnierListOperationsByUser(Resource):
+   
+   @lolturnier.marshal_list_with(turnier)
+   def get(self, user_id):
+      log = ApplicationLogic()
+      return log.get_all_turniere_from_user(user_id)
+   
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # TEAMS
 #------------------------------------------------------------------------------------------------------------------------------------------------

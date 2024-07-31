@@ -94,6 +94,17 @@ class ApplicationLogic(object):
     with TurnierMapper() as mapper:
       return mapper.find_by_id(id)
     
+  def get_all_turniere_from_user(self, user_id):
+     result = []
+     all_user_turnier_entries = self.get_user_turnier_entries_by_user_id(user_id)
+
+     for entry in all_user_turnier_entries:
+        turnier = self.get_turnier_by_id(entry['turnier_id'])
+        result.append(turnier)
+      
+     return result
+
+    
   def create_turnier(self, turnier):
      with TurnierMapper() as mapper:
         return mapper.insert(turnier)
