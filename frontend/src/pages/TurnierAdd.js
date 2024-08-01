@@ -5,8 +5,6 @@ import { useEffect, useState } from 'react';
 const TurnierAdd = () => {
 
 
-
-
   return (
     <Box>
       

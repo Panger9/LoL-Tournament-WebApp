@@ -10,7 +10,7 @@ const Turnier = () => {
   const [turniere, setturniere] = useState([])
 
   useEffect(() => {
-    fetch('/lolturnier/turnier')
+    fetch('/lolturnier/turnier-with-slots')
     .then((res) => res.json())
     .then((data) => {
       setturniere(data)

@@ -1,9 +1,9 @@
 import {Box, Typography, Button, Dialog, Grid, Paper, Card} from '@mui/material'
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import Playerinfo from '../components/PlayerInfo'
 import { UserContext } from '../App';
 import RankMean from '../components/RankMean';
+import PlayerinfoSmall from '../components/PlayerInfoSmall';
 
 const TurnierDetails = () => {
 
@@ -47,7 +47,7 @@ const TurnierDetails = () => {
           <Box sx={{display:"flex", flexDirection:"column", gap:"7px", margin:"20px 0px"}}>
           {team.slice(1).map((user, userIndex) => (
           <>
-          <Playerinfo name={user.gameName} tag={user.tagLine} tier={user.tier} level={user.summonerLevel} profileIconId={user.profileIconId} rank={user.rank}></Playerinfo>
+          <PlayerinfoSmall name={user.gameName} tag={user.tagLine} tier={user.tier} level={user.summonerLevel} profileIconId={user.profileIconId} rank={user.rank} role={user.role}></PlayerinfoSmall>
           </>
           ))}
           

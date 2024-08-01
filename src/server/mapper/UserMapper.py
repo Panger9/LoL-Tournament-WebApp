@@ -72,15 +72,15 @@ class UserMapper(Mapper):
         
         cursor = self._cnx.cursor()
 
-        cursor.execute(f"""SELECT users.id, users.sum_name, users.tag_line, users.token
+        cursor.execute(f"""SELECT users.id, users.sum_name, users.tag_line, users.token, user_team.role
                             FROM user_team
                             JOIN users ON user_team.user_id = users.id
                             WHERE user_team.team_id = {team_id}""")
         tuples = cursor.fetchall()
         result = []
 
-        for (id,sum_name, tag_line, token) in tuples:
-            user = User(id, sum_name, tag_line, token)
+        for (id,sum_name, tag_line, token, role) in tuples:
+            user = {'id': id, 'sum_name': sum_name, 'tag_line': tag_line, 'token': token, 'role': role}
             result.append(user)
 
         self._cnx.commit()  

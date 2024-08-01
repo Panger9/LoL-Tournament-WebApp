@@ -1,8 +1,10 @@
-class Turnier():
-    def __init__(self, id=0, name='', team_size=0):
+class Turnier:
+    def __init__(self, id=0, name='', team_size=0, turnier_owner=0, start_date=None):
         self._id = id
         self._name = name
         self._team_size = team_size
+        self._turnier_owner = turnier_owner
+        self._start_date = start_date
 
     def get_id(self):
         return self._id
@@ -22,8 +24,23 @@ class Turnier():
     def set_team_size(self, team_size):
         self._team_size = team_size
 
+    def get_turnier_owner(self):
+        return self._turnier_owner
+
+    def set_turnier_owner(self, turnier_owner):
+        self._turnier_owner = turnier_owner
+
+    def get_start_date(self):
+        return self._start_date
+
+    def set_start_date(self, start_date):
+        self._start_date = start_date
+
+    def get_slots(self):
+        return self._team_size * 5
+
     def __str__(self):
-        return f"Turnier: {self._id}, name: {self._name}, Team Size: {self._team_size}"
+        return f"Turnier: {self._id}, Name: {self._name}, Team Size: {self._team_size}, Turnier Owner: {self._turnier_owner}, Start Date: {self._start_date}"
 
     @staticmethod
     def umwandlung(dic: dict):
@@ -31,4 +48,6 @@ class Turnier():
         obj.set_id(dic['id'])
         obj.set_name(dic['name'])
         obj.set_team_size(dic['team_size'])
+        obj.set_turnier_owner(dic['turnier_owner'])
+        obj.set_start_date(dic['start_date'])
         return obj

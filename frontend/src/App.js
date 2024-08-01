@@ -73,7 +73,7 @@ function App() {
 
         <Header sx={{}}></Header>
 
-        <Box sx={{marginTop:"100px", width:"80%"}}>
+        <Box sx={{marginTop:"100px", width:"90%"}}>
           <Routes>
             <Route path={'/turniere'} element={<Turnier />} />
             <Route path={'/create'} element={<TurnierAdd />} />

@@ -11,6 +11,8 @@ from server.mapper.UserTeamMapper import UserTeamMapper
 from server.ApiIntegration.RiotApi import RiotAPIIntegration
 
 import string, random
+from datetime import datetime
+
 
 class ApplicationLogic(object):
   def __init__(self):
@@ -58,14 +60,12 @@ class ApplicationLogic(object):
           team_users = [{'team_id': team._id}]
           users = self.get_user_by_team(team._id)
           for user in users:
-              user_info = self.get_playerinfo_important(user._sum_name, user._tag_line)
+              user_info = self.get_playerinfo_important(user['sum_name'], user['tag_line'])
+              user_info['role'] = user['role']
               team_users.append(user_info)
           result.append(team_users)
       return result
 
-
-
-    
   def create_user(self, user):
     log = ApplicationLogic()
     token = log.create_token()
@@ -91,8 +91,24 @@ class ApplicationLogic(object):
       return mapper.find_all()
 
   def get_turnier_by_id(self, id):
+    all_user_in_turnier = self.get_user_by_turnier(id)
+
     with TurnierMapper() as mapper:
-      return mapper.find_by_id(id)
+      turnier =  mapper.find_by_id(id)
+      slots = str(len(all_user_in_turnier)) + '/' + str(turnier.get_slots())
+      start_date = turnier.get_start_date()
+        
+      # Convert datetime to string
+      if isinstance(start_date, datetime):
+         start_date = start_date.isoformat()
+      return {
+                'id': turnier.get_id(),
+                'name': turnier.get_name(),
+                'team_size': turnier.get_team_size(),
+                'turnier_owner': turnier.get_turnier_owner(),
+                'start_date': start_date,
+                'slots': slots
+            }
     
   def get_all_turniere_from_user(self, user_id):
      result = []
@@ -103,8 +119,15 @@ class ApplicationLogic(object):
         result.append(turnier)
       
      return result
-
     
+  def get_all_turniere_with_slots(self):
+     result = []
+     all_turniere = self.get_all_turniere()
+     for turnier in all_turniere:
+        new_turnier = self.get_turnier_by_id(turnier._id)
+        result.append(new_turnier)
+     return result
+
   def create_turnier(self, turnier):
      with TurnierMapper() as mapper:
         return mapper.insert(turnier)
@@ -186,9 +209,9 @@ class ApplicationLogic(object):
      with UserTeamMapper() as mapper:
         return mapper.find_by_ids(user_id, team_id)
 
-  def create_user_team_entry(self, user_id, team_id):
+  def create_user_team_entry(self, user_id, team_id, role):
      with UserTeamMapper() as mapper:
-        return mapper.insert(user_id, team_id)
+        return mapper.insert(user_id, team_id, role)
      
   def delete_user_from_team(self, user_id, team_id):
      with UserTeamMapper() as mapper:
@@ -222,7 +245,7 @@ class ApplicationLogic(object):
           if entry is not None:
              deleted_entries = self.remove_user_from_team_and_turnier(user_id, entry['team_id'], turnier_id)
      
-     user_team = self.create_user_team_entry(user_id, team_id)
+     user_team = self.create_user_team_entry(user_id, team_id, 'fill')
      user_turnier = self.create_user_turnier_entry(user_id, turnier_id)
      added_entries.append(user_team)
      added_entries.append(user_turnier)

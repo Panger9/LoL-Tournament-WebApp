@@ -16,8 +16,9 @@ const Header = () => {
 
   const tabs = [
     { label: 'Browse', path: '/turniere'},
-    { label: 'Erstellen', path: '/create'},
     { label: 'Meine Turniere', path: '/my-tournaments' },
+    { label: 'Erstellen', path: '/create'},
+
   ];
 
   const handleDisconnectAccount = async () => {

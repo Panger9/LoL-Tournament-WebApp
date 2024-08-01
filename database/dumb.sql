@@ -16,7 +16,7 @@ CREATE TABLE users (
   token varchar(100) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO users VALUES (1,'Sir Panger', 'EUW', 'AAAASSSSDDDD'), (2,'Lanzus73', 'EUW', 'SSSSDDDDFFFF');
+INSERT INTO users VALUES (1,'Sir Panger', 'EUW', 'wGmyHpI9QTnE'), (2,'Lanzus73', 'EUW', 'SSSSDDDDFFFF');
 
 -- Table structure for table `users`
 CREATE TABLE teams (
@@ -24,23 +24,27 @@ CREATE TABLE teams (
   turnier_id int NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO teams VALUES (1,1),(2,1),(3,1),(4,1);
+INSERT INTO teams VALUES (1,1),(2,1),(3,1),(4,1),(5,2),(6,2),(7,2),(8,2),(9,2);
 
 CREATE TABLE turniere (
-  id int PRIMARY KEY NOT NULL DEFAULT '0',
-  name varchar(100) NOT NULL DEFAULT '',
-  team_size int NOT NULL DEFAULT '8'
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  name varchar(100) NOT NULL,
+  team_size int NOT NULL DEFAULT 8,
+  turnier_owner int NOT NULL,
+  start_date datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   
-INSERT INTO turniere VALUES (1, 'Testturnier', 4),(2, 'leeresTurnier', 8);
+INSERT INTO turniere (id, name, team_size, turnier_owner) VALUES (1, 'Testturnier', 4, 3), (2, 'leeresTurnier', 8, 1);
+
 
 CREATE TABLE user_team (
   user_id int,
   team_id int,
+  role varchar(7),
   PRIMARY KEY (user_id, team_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO user_team VALUES (1,1),(2,2);
+INSERT INTO user_team VALUES (1,1,'jgl'),(2,2,'top');
 
 CREATE TABLE user_turnier (
   user_id int,

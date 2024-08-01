@@ -37,6 +37,15 @@ turnier = api.model('turnier', {
     'id': fields.Integer(attribute='_id'),
     'name': fields.String(attribute='_name'),
     'team_size': fields.Integer(attribute='_team_size'),
+    'turnier_owner': fields.Integer(attribute='_turnier_owner'),
+    'start_date': fields.DateTime(attribute='_start_date')
+})
+
+user_team = api.model('user_team', {
+   'user_id': fields.Integer,
+   'team_id': fields.Integer,
+   'role': fields.String
+
 })
 
 
@@ -124,7 +133,7 @@ class UserOperationsTurnierId(Resource):
 @lolturnier.response(500, 'Server Error')
 class UserOperationsTeamId(Resource):
 
-  @lolturnier.marshal_with(user)
+
   def get(self, id):
     log = ApplicationLogic()
     _user = log.get_user_by_team(id)
@@ -190,13 +199,22 @@ class TurnierListOperations(Resource):
            return _turnier, 200
         else:
            return "Proposal ist leer", 500
+        
+@lolturnier.route('/turnier-with-slots')
+@lolturnier.response(500, 'Server Error')
+class TurnierListOperationsSlots(Resource):
+
+    def get(self):
+        log = ApplicationLogic()
+        response = log.get_all_turniere_with_slots()
+        return response
       
       
 @lolturnier.route('/turnier-by-id/<int:id>')
 @lolturnier.response(500, 'Server Error')
 class TurnierOperations(Resource):
    
-   @lolturnier.marshal_with(turnier)
+
    def get(self, id):
       log = ApplicationLogic()
       response = log.get_turnier_by_id(id)
@@ -211,7 +229,7 @@ class TurnierOperations(Resource):
 @lolturnier.response(500, 'server error')
 class TurnierListOperationsByUser(Resource):
    
-   @lolturnier.marshal_list_with(turnier)
+
    def get(self, user_id):
       log = ApplicationLogic()
       return log.get_all_turniere_from_user(user_id)
@@ -340,6 +358,13 @@ class UserTeamListOperations(Resource):
         u = log.get_all_user_team_entries()
         return u
     
+    @lolturnier.expect(user_team)
+    def post(self):
+        log = ApplicationLogic()
+        proposal = api.payload
+        all_user = log.create_user_team_entry(proposal['user_id'],proposal['team_id'],proposal['role'])
+        return all_user
+    
 @lolturnier.route('/user-team/<int:user_id>/<int:team_id>')
 @lolturnier.response(500, 'Server Error')
 class UserTeamOperations(Resource):
@@ -349,10 +374,7 @@ class UserTeamOperations(Resource):
        entry = log.get_user_team_entry_by_ids(user_id, team_id)
        return entry
 
-    def post(self, user_id, team_id):
-        log = ApplicationLogic()
-        all_user = log.create_user_team_entry(user_id, team_id)
-        return all_user
+
     
     def delete(self, user_id, team_id):
        log = ApplicationLogic()
