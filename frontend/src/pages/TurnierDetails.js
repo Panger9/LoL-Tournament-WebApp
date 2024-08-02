@@ -36,11 +36,32 @@ const TurnierDetails = () => {
     setReload(!reload)
   }
 
+  const leaveTeam = async (User_id, Team_id, Turnier_id) => {
+    const res = await fetch(`/lolturnier/user-team-turnier/${User_id}/${Team_id}/${Turnier_id}`, {
+      method:"DELETE"
+    })
+    setReload(!reload)
+
+  }
+  const isInTeam = (teamIndex) => {
+
+    let isInTeam = false
+    for(let i = 1; i < 7; i++){
+      if (turnier[teamIndex] && turnier[teamIndex][i]) {
+        if(turnier[teamIndex][i].gameName === user.sumName){
+          isInTeam = true
+        }
+      } else {
+        console.log('Team oder Spielerinformationen sind nicht verfügbar.');
+      }
+    }
+    return isInTeam
+  }
 
   return ( 
     <Grid container spacing={3}  >
       {isPending && 'Daten werden geladen'}
-      {turnier && turnier.map((team, teamIndex) => (
+      {(turnier && user) && turnier.map((team, teamIndex) => (
         <Grid item xs={12} sm={6} lg={3} key={teamIndex} >
           <Box sx={{backgroundColor:"#171717", borderRadius:"18px", display:"flex", flexDirection:"column", padding:"20px"}}>
           <Typography variant='h5'>Team {teamIndex + 1}</Typography>
@@ -53,7 +74,19 @@ const TurnierDetails = () => {
           
           </Box>
           
-          <Button onClick={() => joinTeam(user.user_id, team[0].team_id, TurnierId )} variant='contained' sx={{ borderRadius:"12px" ,width:"40%", boxShadow:"none", ':hover':{boxShadow:"none"}, ':focus':{boxShadow:"none"}}}>join</Button>
+          <Box sx={{display:"flex", gap:"10px", justifyContent:"center"}}>
+          <Button onClick={() => joinTeam(user.user_id, team[0].team_id, TurnierId )} variant='contained' 
+          sx={{ borderRadius:"12px" ,width:"40%", boxShadow:"none", ':hover':{boxShadow:"none"}, ':focus':{boxShadow:"none"}}}>
+            join
+          </Button>
+
+          <Button onClick={() => leaveTeam(user.user_id, team[0].team_id, TurnierId )} variant='contained' color='error' disabled={!isInTeam(teamIndex)}
+          sx={{ borderRadius:"12px" ,width:"40%", boxShadow:"none", ':hover':{boxShadow:"none"}, ':focus':{boxShadow:"none"}}}>
+            leave
+          </Button>
+
+          </Box>
+
           </Box>
         </Grid>
       ))}

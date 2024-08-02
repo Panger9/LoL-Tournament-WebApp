@@ -39,6 +39,7 @@ const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role }) 
 
   };
 
+
   return (
     <Box sx={{ display: "flex", flexDirection: "row", gap: "15px", alignContent: "center", backgroundColor: "rgb(0,0,0,0.4)", padding: "10px 25px 10px 15px", borderRadius: "20px", maxWidth: "fit-content" }}>
       <Box sx={{ position: "relative" }}>
