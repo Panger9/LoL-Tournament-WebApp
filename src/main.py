@@ -8,6 +8,8 @@ from server.bo.User import User
 from server.bo.Team import Team
 from server.bo.Turnier import Turnier
 
+from datetime import datetime
+
 # Flask App muss erstellt werden
 app = Flask(__name__)
 
@@ -33,12 +35,13 @@ team = api.model('team', {
     'turnier_id': fields.Integer(attribute='_turnier_id'),
 })
 
+
 turnier = api.model('turnier', {
     'id': fields.Integer(attribute='_id'),
     'name': fields.String(attribute='_name'),
     'team_size': fields.Integer(attribute='_team_size'),
     'turnier_owner': fields.Integer(attribute='_turnier_owner'),
-    'start_date': fields.DateTime(attribute='_start_date')
+    'start_date': fields.String(attribute='_start_date')
 })
 
 user_team = api.model('user_team', {
@@ -180,6 +183,7 @@ class TurnierListOperations(Resource):
     def post(self):
         log = ApplicationLogic()
         proposal = Turnier.umwandlung(api.payload)
+        print(proposal._start_date)
 
         if proposal is not None:
            _turnier = log.create_turnier(proposal)

@@ -14,9 +14,13 @@ const TurnierListe = ({liste}) => {
       {liste && liste.map((e) => {
 
         return (
-          <ListItemButton onClick={() => {Navigate(`/turniere/${e.id}`)}}>
+          <ListItemButton onClick={() => {Navigate(`/turniere/${e.id}`) }}>
 
-            <Typography>Turnier-Info: {e.name} {e.team_size} {e.slots}</Typography>
+            <Typography>Name: {e.name} </Typography>
+            <Typography>Größe: {e.team_size}</Typography>
+            <Typography>Owner: {e.turnier_owner}</Typography>
+            <Typography>Slots: {e.slots}</Typography>
+            <Typography>START: {e.start_date}</Typography>
             
           </ListItemButton>
         )

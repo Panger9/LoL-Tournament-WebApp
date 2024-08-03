@@ -24,7 +24,7 @@ const theme = createTheme({
             secondary: "rgba(255,255,255,0.65)", // Helles Grau für sekundären Text, bietet einen sanften Kontrast
         },
     },
-    
+
     
     breakpoints: {
         values: {

@@ -61,7 +61,7 @@ const Header = () => {
 
       <Box sx={{display:"flex", gap:"10px"}}>
         {user.signedIn ? 
-        <Button onClick={() => {setOpenDialog(true)}}>Verbindung trennen</Button>
+        <Button variant='contained' onClick={() => {setOpenDialog(true)}}>Verbindung trennen</Button>
         : 
         <Link to='/register'>
           <Button>Registrieren</Button>

@@ -25,6 +25,13 @@ class ApplicationLogic(object):
       # Wählt zufällig 12 Zeichen aus der Zeichenfolge aus
       token = ''.join(random.choice(characters) for _ in range(12))
       return token
+  
+  def validate_datetime_format(self, date_string):
+    try:
+        datetime.strptime(date_string, '%d.%m.%Y/%H:%M')
+        return True
+    except ValueError:
+        return False
 
   """
   Im folgenden werden alle Funktionen aufgeführt, welche Daten von der Datenbank abrufen.
@@ -96,17 +103,13 @@ class ApplicationLogic(object):
     with TurnierMapper() as mapper:
       turnier =  mapper.find_by_id(id)
       slots = str(len(all_user_in_turnier)) + '/' + str(turnier.get_slots())
-      start_date = turnier.get_start_date()
         
-      # Convert datetime to string
-      if isinstance(start_date, datetime):
-         start_date = start_date.isoformat()
       return {
                 'id': turnier.get_id(),
                 'name': turnier.get_name(),
                 'team_size': turnier.get_team_size(),
                 'turnier_owner': turnier.get_turnier_owner(),
-                'start_date': start_date,
+                'start_date': turnier.get_start_date(),
                 'slots': slots
             }
     
@@ -129,8 +132,18 @@ class ApplicationLogic(object):
      return result
 
   def create_turnier(self, turnier):
-     with TurnierMapper() as mapper:
-        return mapper.insert(turnier)
+        # Validierung von turnier._start_date
+        if not self.validate_datetime_format(turnier._start_date):
+            raise ValueError('Invalid date format. Expected format: DD.MM.JJJJ/hh:mm')
+
+        with TurnierMapper() as mapper:
+            newTurnier = mapper.insert(turnier)
+
+        team = Team(0, turnier._id)
+        for x in range(newTurnier._team_size):
+            self.create_team(team)
+
+        return newTurnier
      
   def update_turnier(self, turnier):
      with TurnierMapper() as mapper:

@@ -75,7 +75,7 @@ const TurnierDetails = () => {
           </Box>
           
           <Box sx={{display:"flex", gap:"10px", justifyContent:"center"}}>
-          <Button onClick={() => joinTeam(user.user_id, team[0].team_id, TurnierId )} variant='contained' 
+          <Button onClick={() => joinTeam(user.user_id, team[0].team_id, TurnierId )} variant='contained' disabled={!user.signedIn}
           sx={{ borderRadius:"12px" ,width:"40%", boxShadow:"none", ':hover':{boxShadow:"none"}, ':focus':{boxShadow:"none"}}}>
             join
           </Button>
