@@ -41,6 +41,27 @@ class UserTeamMapper(Mapper):
             result = None
 
         return result
+    
+    def find_by_user_id(self, user_id):
+        cursor = self._cnx.cursor()
+        query = f'''
+            SELECT user_id, team_id, role
+            FROM user_team
+            WHERE user_id={user_id} 
+        '''
+        cursor.execute(query)
+        tuples = cursor.fetchall()
+        result = []
+        
+        for (user_id, team_id, role) in tuples:
+            user_team  = {'user_id': user_id, 'team_id': team_id, 'role': role}
+            result.append(user_team)
+
+        # Umwandlung der Abfrageergebnisse in eine Liste von Dictionaries
+        
+        cursor.close()
+
+        return result
 
     def insert(self, user_id, team_id, role):
         cursor = self._cnx.cursor()

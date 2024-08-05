@@ -94,9 +94,14 @@ class ApplicationLogic(object):
     with UserMapper() as mapper:
       return mapper.find_by_token(token)
   
+  def get_user_by_puuid(self, puuid):
+     with UserMapper() as mapper:
+        return mapper.find_by_puuid(puuid)
+  
   def get_user_by_turnier(self, turnier_id):
      with UserMapper() as mapper:
         return mapper.find_by_turnier(turnier_id)
+        
      
   def get_user_by_team(self, team_id):
      with UserMapper() as mapper:
@@ -139,9 +144,30 @@ class ApplicationLogic(object):
      with UserMapper() as mapper:
         return mapper.update(user)
      
-  def delete_user(self, token):
+  def delete_user(self, user_id):
+     
+     user_team_entries = self.get_user_team_entry_by_user_id(user_id)
+     user_turnier_entries = self.get_user_turnier_entries_by_user_id(user_id)
+     result_user_team = []
+     result_user_turnier = []
+   
+     for user_team in user_team_entries:
+        result_user_team.append(self.delete_user_from_team(user_id, user_team['team_id']))
+      
+     for user_turnier in user_turnier_entries:
+        result_user_turnier.append(self.delete_user_from_turnier(user_id, user_turnier['turnier_id']))
+
      with UserMapper() as mapper:
-        return mapper.delete(token)
+        user = mapper.delete(user_id)
+      
+     result = []
+     result.append(user)
+     result.append(result_user_team)
+     result.append(result_user_turnier)
+
+     return result
+
+   
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # TURNIERE
@@ -222,6 +248,16 @@ class ApplicationLogic(object):
   def get_team_by_turnier_id(self, turnier_id):
      with TeamMapper() as mapper:
         return mapper.find_by_turnier(turnier_id)
+     
+  def get_all_teams_from_user(self, user_id):
+     result = []
+     all_user_team_entries = self.get_user_team_entry_by_user_id(user_id)
+
+     for entry in all_user_team_entries:
+        team = self.get_team_by_id(entry['team_id'])
+        result.append(team)
+      
+     return result
     
   def create_team(self, team):
      with TeamMapper() as mapper:
@@ -271,6 +307,10 @@ class ApplicationLogic(object):
   def get_all_user_team_entries(self):
      with UserTeamMapper() as mapper:
         return mapper.find_all()
+   
+  def get_user_team_entry_by_user_id(self, user_id):
+     with UserTeamMapper() as mapper:
+        return mapper.find_by_user_id(user_id)
      
   def get_user_team_entry_by_ids(self, user_id, team_id):
      with UserTeamMapper() as mapper:
@@ -323,11 +363,6 @@ class ApplicationLogic(object):
         
      return ['DELETED: ',deleted_entries, 'ADDED', added_entries]
   
-  def is_in_team_from_turnier(self, user_id, team_id, turnier_id):
-     all_teams = self.get_team_by_turnier_id(turnier_id)
-
-
-     return
 
   """
   Im folgenden werden alle Funktionen aufgeführt, welche Daten von der Riot Api fetchen.
@@ -461,8 +496,6 @@ class ApplicationLogic(object):
 
       return response
   
-def register(self):
-   pass
 
     
 

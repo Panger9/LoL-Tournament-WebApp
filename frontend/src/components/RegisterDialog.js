@@ -66,17 +66,33 @@ function RegisterDialog() {
 
     if(iconChanged){
       try {
-        let user = {id: 0, puuid: accountInfo.puuid, token: 'fill'}
-        const res = await fetch(`/lolturnier/user`, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify(user)
-        })
-        const data = await res.json()
-        localStorage.removeItem('tournament_token')
-        localStorage.setItem('tournament_token', data.token)
+
+        //Überprüfen, ob die gegebene puuid bereits in der Datenbank existiert. Wenn nicht (404), dann wird ein neuer User angelegt. Falls doch, wird der token vom bestehenden user im Browser abgelegt
+        const res1 = await fetch(`/lolturnier/user-by-puuid/${accountInfo.puuid}`)
+
+        if (res1.status === 404) {
+
+          let user = {id: 0, puuid: accountInfo.puuid, token: 'fill'}
+
+          const res = await fetch(`/lolturnier/user`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(user)
+          })
+
+          const data = await res.json()
+          localStorage.removeItem('tournament_token')
+          localStorage.setItem('tournament_token', data.token)
+        }
+        else {
+          const data = await res1.json()
+          localStorage.removeItem('tournament_token')
+          localStorage.setItem('tournament_token', data.token)
+          
+        }
         setPhase2(false) 
         setPhase3(true)
+        
       }
       catch {
         setError2('Änderung des Icons erkannt. Anlegen des Users jedoch fehlgeschlagen')

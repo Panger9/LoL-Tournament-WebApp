@@ -22,9 +22,8 @@ const Header = () => {
   ];
 
   const handleDisconnectAccount = async () => {
-    console.log(user)
-    console.log(user.token)
-    const res = await fetch(`/lolturnier/user-by-token/${user.token}`, {
+
+    const res = await fetch(`/lolturnier/user-by-id/${user.user_id}`, {
       method: "DELETE"
     })
     localStorage.removeItem('tournament_token')

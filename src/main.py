@@ -1,5 +1,5 @@
 from flask import Flask, request, send_from_directory
-from flask_restx import Api, Resource, fields, Namespace, reqparse
+from flask_restx import Api, Resource, fields, Namespace, reqparse, abort
 from flask_cors import CORS
 
 from server.ApplicationLogic import ApplicationLogic
@@ -106,6 +106,10 @@ class UserOperationsId(Resource):
 
     return _user
   
+  def delete(self, id):
+    log = ApplicationLogic()
+    return log.delete_user(id)
+  
 @lolturnier.route('/user-by-token/<string:token>')
 @lolturnier.response(500, 'Server Error')
 class UserOperationsToken(Resource):
@@ -116,9 +120,18 @@ class UserOperationsToken(Resource):
     _user = log.get_user_by_token(token)
     return _user
   
-  def delete(self, token):
+@lolturnier.route('/user-by-puuid/<string:puuid>')
+@lolturnier.response(500, 'Server Error')
+class UserOperationsPuuid(Resource):
+
+  @lolturnier.marshal_with(user)
+  def get(self, puuid):
     log = ApplicationLogic()
-    log.delete_user(token)
+    _user = log.get_user_by_puuid(puuid)
+    if _user is None:
+        abort(404, message=f"User with puuid '{puuid}' not found")
+    return _user
+  
   
 @lolturnier.route('/user-by-turnier-id/<int:id>')
 @lolturnier.response(500, 'Server Error')
@@ -374,6 +387,15 @@ class UserTeamListOperations(Resource):
         proposal = api.payload
         all_user = log.update_user_team_entry(proposal['user_id'],proposal['team_id'],proposal['role'])
         return all_user
+    
+@lolturnier.route('/user-team-by-user-id/<int:user_id>')
+@lolturnier.response(500, 'Server Error')
+class UserTeamListOperationsA(Resource):
+
+    def get(self, user_id):
+       log = ApplicationLogic()
+       entry = log.get_user_team_entry_by_user_id(user_id)
+       return entry
     
 @lolturnier.route('/user-team/<int:user_id>/<int:team_id>')
 @lolturnier.response(500, 'Server Error')

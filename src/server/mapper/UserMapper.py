@@ -42,6 +42,26 @@ class UserMapper(Mapper):
             result = user
         except IndexError:
             result = None
+
+        self._cnx.commit()  
+        cursor.close()
+
+        return result
+    
+    def find_by_puuid(self, puuid):
+        cursor = self._cnx.cursor()
+        cursor.execute(f"SELECT * FROM users WHERE puuid='{puuid}'")
+        tuples = cursor.fetchall()
+
+        if tuples:
+            (id, puuid, token) = tuples[0]
+            user = User(id, puuid, token)
+            result = user
+        else:
+            result = None
+
+        self._cnx.commit()  
+        cursor.close()  
         
         return result
 
@@ -108,9 +128,12 @@ class UserMapper(Mapper):
 
         return user
 
-    def delete(self, token):
+    def delete(self, user_id):
+
         cursor = self._cnx.cursor()
-        cursor.execute(f"DELETE FROM users WHERE token='{token}'")
+        cursor.execute(f"DELETE FROM users WHERE id='{user_id}'")
         
         self._cnx.commit()
         cursor.close()
+
+        return {"deleted_user_id": user_id}
