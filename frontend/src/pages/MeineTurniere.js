@@ -17,11 +17,17 @@ const MeineTurniere = () => {
       setTurnierList(data)
     }
 
-    fetchMeineTurniere()
-  },[])
+    fetchMeineTurniere() 
+  },[user])
 
   return ( 
-    <TurnierListe liste={turnierList}></TurnierListe>
+    <Box>
+      
+      <TurnierListe liste={turnierList}></TurnierListe>
+
+      
+    </Box>
+    
    );
 }
  

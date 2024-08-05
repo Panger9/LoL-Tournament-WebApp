@@ -9,6 +9,7 @@ import { UserContext } from '../App';
 import enGB from 'date-fns/esm/locale/en-GB/index';
 import { deDE } from '@mui/x-date-pickers/locales';
 import deAT from 'date-fns/locale/de-AT';
+import { useNavigate } from 'react-router-dom';
 
 const TurnierAdd = () => {
   const user = useContext(UserContext);
@@ -18,8 +19,17 @@ const TurnierAdd = () => {
   const [turnierOwner, setTurnierOwner] = useState(0);
   const [turnierStartdate, setTurnierStartdate] = useState(null);
 
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const Navigate = useNavigate()
+
   const handleSubmit = async (e) => {
+
+    setLoading(true)
+    setError(false)
     e.preventDefault();
+
     const formattedDate = turnierStartdate ? format(turnierStartdate, 'dd.MM.yyyy/HH:mm', { locale: de }) : null;
     const turnierData = {
       id: 0,
@@ -28,12 +38,21 @@ const TurnierAdd = () => {
       turnier_owner: user.user_id,
       start_date: formattedDate,
     };
-    console.log(turnierData);
-    fetch(`/lolturnier/turnier`, {
+
+    const res = await fetch(`/lolturnier/turnier`, {
       method:"POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(turnierData)
     })
+    if (!res.ok){
+      setError('Turnier-Erstellung fehlerhaft. Bitte überprüfe, ob alle Eingaben inklusive Datum vorhanden sind!')
+      setLoading(false)
+        }
+    else {
+      setLoading(false)
+      Navigate('/turniere')
+    }
+
     // Hier kannst du die API-Aufruf-Funktion hinzufügen
   };
 
@@ -41,12 +60,13 @@ const TurnierAdd = () => {
     <Box>
       <form onSubmit={handleSubmit} style={{display:"flex", flexDirection:"column", gap:"15px"}}>
         <TextField
+          required
           label="Turniername"
           type="text"
           value={turnierName}
           onChange={(e) => setTurnierName(e.target.value)}
         />
-        <FormControl fullWidth>
+        <FormControl fullWidth required>
           <InputLabel id="demo-simple-select-label">Turniergröße</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -62,19 +82,20 @@ const TurnierAdd = () => {
             <MenuItem value={64}>64 Teams</MenuItem>
           </Select>
         </FormControl>
-        <LocalizationProvider dateAdapter={AdapterDateFns} locale={deDE}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} locale={deDE} required>
           <DateTimePicker
+            required
             label="Turnier Startdatum und -zeit"
             value={turnierStartdate}
             onChange={(newValue) => setTurnierStartdate(newValue)}
             ampm={false} // Hier wird das 24-Stunden-Format aktiviert
             inputFormat="dd.MM.yyyy HH:mm"
             mask="__.__.____ __:__"
-            
-            slotProps={{ textField: (params) => <TextField {...params} /> }}
+            slotProps={{ textField: (params) => <TextField {...params} required /> }}
           />
         </LocalizationProvider>
-        <Button type="submit" variant='contained' disabled={!user.signedIn}>Submit</Button>
+        {error && <Typography color='error'>{error}</Typography>}
+        <Button type="submit" variant='contained' disabled={!user.signedIn}>{loading ? 'lädt...' : 'Submit'}</Button>
       </form>
     </Box>
   );

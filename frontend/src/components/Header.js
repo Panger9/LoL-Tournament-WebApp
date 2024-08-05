@@ -33,9 +33,6 @@ const Header = () => {
 
   }
 
-
-
-
   return (
 
     <Box>
@@ -64,7 +61,7 @@ const Header = () => {
         <Button variant='contained' onClick={() => {setOpenDialog(true)}}>Verbindung trennen</Button>
         : 
         <Link to='/register'>
-          <Button>Registrieren</Button>
+          <Button variant='contained'>Registrieren</Button>
         </Link>
 
         }

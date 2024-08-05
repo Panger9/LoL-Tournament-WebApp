@@ -1,5 +1,4 @@
 import { Box, SvgIcon, Typography } from "@mui/material";
-import RankMean from "./RankMean";
 import { Link, useNavigate } from "react-router-dom";
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 

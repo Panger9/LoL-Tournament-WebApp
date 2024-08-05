@@ -33,6 +33,48 @@ class ApplicationLogic(object):
     except ValueError:
         return False
 
+  def rank_mean(self, ranks):
+        
+        if not isinstance(ranks, list):
+            raise ValueError('Parameter "ranks" must be a list')
+        if len(ranks) < 1:
+            return ''
+
+        rank_to_points = [
+            'UNRANKED',
+            'IRON IV', 'IRON III', 'IRON II', 'IRON I',
+            'BRONZE IV', 'BRONZE III', 'BRONZE II', 'BRONZE I',
+            'SILVER IV', 'SILVER III', 'SILVER II', 'SILVER I',
+            'GOLD IV', 'GOLD III', 'GOLD II', 'GOLD I',
+            'PLATINUM IV', 'PLATINUM III', 'PLATINUM II', 'PLATINUM I',
+            'EMERALD IV', 'EMERALD III', 'EMERALD II', 'EMERALD I', 
+            'DIAMOND IV', 'DIAMOND III', 'DIAMOND II', 'DIAMOND I',
+            'MASTER', 'GRANDMASTER', 'CHALLENGER'
+        ]
+
+        all_points = 0
+
+        for rank in ranks:
+            if isinstance(rank, int):
+                  if rank < 100:
+                     rank = 'BRONZE IV'
+                  elif 100 <= rank < 300:
+                     rank = 'SILVER IV'
+                  elif 300 <= rank < 500:
+                     rank = 'GOLD IV'
+                  elif rank >= 500:
+                     rank = 'PLATINUM IV'
+            if rank in rank_to_points:
+               all_points += rank_to_points.index(rank)
+            else:
+               raise ValueError(f'Invalid rank: {rank}')  
+        
+
+        mean_points = all_points / len(ranks)
+        rounded_mean_points = round(mean_points)
+        return rank_to_points[rounded_mean_points]
+  
+
   """
   Im folgenden werden alle Funktionen aufgeführt, welche Daten von der Datenbank abrufen.
   """
@@ -64,12 +106,24 @@ class ApplicationLogic(object):
       result = []
       all_teams = self.get_team_by_turnier_id(turnier_id)
       for team in all_teams:
+          all_player_elo = []
           team_users = [{'team_id': team._id}]
           users = self.get_user_by_team(team._id)
           for user in users:
               user_info = self.get_playerinfo_important(user['sum_name'], user['tag_line'])
-              user_info['role'] = user['role']
+              user_info['role'] = user['role'] 
+
+              #rank mean ermitteln ---------------------------------------------
+              if 'tier' in user_info and user_info['tier'] is not None:
+                  player_elo = user_info['tier'] + ' ' + user_info['rank']
+              else:
+                  player_elo = user_info['summonerLevel']
+              all_player_elo.append(player_elo)
+              #rank mean ermitteln ---------------------------------------------
+
               team_users.append(user_info)
+          mean_team_elo = self.rank_mean(all_player_elo)
+          team_users[0]['mean_rank'] = mean_team_elo
           result.append(team_users)
       return result
 

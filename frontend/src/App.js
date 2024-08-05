@@ -10,6 +10,7 @@ import MeineTurniere from './pages/MeineTurniere.js';
 import { Box } from '@mui/material';
 import { createContext } from 'react';
 import RegisterDialog from './components/RegisterDialog.js';
+import HoverInfobox from './components/HoverInfobox.js';
 
 export const UserContext = createContext();
 
@@ -21,6 +22,7 @@ function App() {
     sumName: '',
     tagLine: '',
     tier: '',
+    rank: '',
     level: '',
     profileIconId: '',
     token: ''
@@ -71,7 +73,7 @@ function App() {
         alignItems:"center"
       }}>
 
-        <Header sx={{}}></Header>
+        <Header sx={{}}/>
 
         <Box sx={{marginTop:"120px", width:"90%"}}>
           <Routes>
@@ -82,6 +84,8 @@ function App() {
             <Route path={'/register'} element={<RegisterDialog />} />
           </Routes>
         </Box>
+
+        {user.signedIn ? '' : <HoverInfobox/>}
 
       </Box>
     </Router>
