@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, Typography, Menu, MenuItem } from '@mui/material';
 import Suppicon from '../images/Suppicon.png';
 import Adcicon from '../images/ADC icon.png';
@@ -6,6 +6,7 @@ import Jglicon from '../images/JUngle icon.png';
 import Midicon from '../images/Mid Icon.png';
 import Topicon from '../images/Topicon.png';
 import Fillicon from '../images/icon-position-unselected.png'
+import { UserContext } from '../App';
 
 const roleIcons = {
   top: Topicon,
@@ -16,25 +17,32 @@ const roleIcons = {
   fill: Fillicon
 };
 
-const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role }) => {
+const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role, team_id }) => {
+
+  const user = useContext(UserContext)
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRole, setCurrentRole] = useState(role);
   const correctIcon = roleIcons[currentRole] || '';
 
-  const fetchRoleChange = async (user_id, team_id) => {
-    const res = fetch(``)
-  }
-
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    if(user.sumName === name && user.tagLine === tag){
+      setAnchorEl(event.currentTarget);
+    }
+    
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const handleRoleChange = (newRole) => {
+  const handleRoleChange = async (newRole) => {
     setCurrentRole(newRole);
+    await fetch(`/lolturnier/user-team`, {
+      method:"PUT",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({user_id: user.user_id, team_id: team_id, role: newRole })
+    })
     handleClose();
 
   };
@@ -64,13 +72,18 @@ const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role }) 
           <Typography sx={{ ':hover': { color: "rgba(215,215,255,0.7)" } }}>{name}</Typography>
         </a>
         <Typography color="textSecondary" variant="body2">{tier ? tier + ' ' + rank : 'UNRANKED'}</Typography>
-        <Box position="relative">
+        <Box >
           <Box
             component="img"
             sx={{
               height: "24px",
-              borderRadius: "13px",
-              cursor: "pointer"
+              
+              borderRadius: "2px",
+              cursor: user.sumName === name && user.tagLine === tag ? "pointer" : "default",
+              ":hover":{
+                scale: user.sumName === name && user.tagLine === tag ? "1.10" : ""
+              },
+              transition:"0.2s"
             }}
             src={correctIcon}
             onClick={handleClick}
@@ -79,6 +92,7 @@ const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role }) 
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleClose}
+            
           >
             {Object.keys(roleIcons).map((roleKey) => (
               <MenuItem key={roleKey} variant="body2" onClick={() => handleRoleChange(roleKey)}>

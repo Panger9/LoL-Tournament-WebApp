@@ -280,6 +280,10 @@ class ApplicationLogic(object):
      with UserTeamMapper() as mapper:
         return mapper.insert(user_id, team_id, role)
      
+  def update_user_team_entry(self, user_id, team_id, role):
+     with UserTeamMapper() as mapper:
+        return mapper.update(user_id, team_id, role)
+     
   def delete_user_from_team(self, user_id, team_id):
      with UserTeamMapper() as mapper:
         return mapper.delete(user_id, team_id)

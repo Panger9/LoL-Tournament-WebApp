@@ -67,7 +67,7 @@ const TurnierDetails = () => {
           <Box sx={{display:"flex", flexDirection:"column", gap:"7px", margin:"20px 0px"}}>
           {team.slice(1).map((user, userIndex) => (
           <>
-          <PlayerinfoSmall name={user.gameName} tag={user.tagLine} tier={user.tier} level={user.summonerLevel} profileIconId={user.profileIconId} rank={user.rank} role={user.role}></PlayerinfoSmall>
+          <PlayerinfoSmall name={user.gameName} tag={user.tagLine} tier={user.tier} level={user.summonerLevel} profileIconId={user.profileIconId} rank={user.rank} role={user.role} team_id={team[0].team_id}></PlayerinfoSmall>
           </>
           ))}
           

@@ -369,6 +369,13 @@ class UserTeamListOperations(Resource):
         all_user = log.create_user_team_entry(proposal['user_id'],proposal['team_id'],proposal['role'])
         return all_user
     
+    @lolturnier.expect(user_team)
+    def put(self):
+        log = ApplicationLogic()
+        proposal = api.payload
+        all_user = log.update_user_team_entry(proposal['user_id'],proposal['team_id'],proposal['role'])
+        return all_user
+    
 @lolturnier.route('/user-team/<int:user_id>/<int:team_id>')
 @lolturnier.response(500, 'Server Error')
 class UserTeamOperations(Resource):
@@ -378,8 +385,6 @@ class UserTeamOperations(Resource):
        entry = log.get_user_team_entry_by_ids(user_id, team_id)
        return entry
 
-
-    
     def delete(self, user_id, team_id):
        log = ApplicationLogic()
        u = log.delete_user_from_team(user_id, team_id)
