@@ -9,6 +9,11 @@ class RiotAPIIntegration:
         url = f'https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{sumName}/{tagLine}?api_key={self.api_key}'
         response = requests.get(url)
         return self._handle_response(response)
+    
+    def fetch_puuid_with_puuid(self, puuid):
+        url = f'https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}?api_key={self.api_key}'
+        response = requests.get(url)
+        return self._handle_response(response)
 
     def fetch_sum_id(self, puuid):
         url = f'https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}?api_key={self.api_key}'

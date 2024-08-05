@@ -340,6 +340,10 @@ class ApplicationLogic(object):
   def get_playerinfo1(self, sumName, tagLine):
     response = self.riot_api.fetch_puuid(sumName, tagLine)
     return response
+  
+  def get_playerinfo1_with_puuid(self, puuid):
+    response = self.riot_api.fetch_puuid_with_puuid(puuid)
+    return response
 
   # dict: {id, accountId, puuid, profileIconId, revisionData, summonerLevel}
   def get_playerinfo2(self, puuid):

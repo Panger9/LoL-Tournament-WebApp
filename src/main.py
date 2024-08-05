@@ -417,6 +417,12 @@ class RiotAPIa(Resource):
         log = ApplicationLogic()
         return log.get_playerinfo1(sumName, tagLine)
     
+@lolturnier.route('/riot/get-playerinfo1/<string:puuid>')
+class RiotAPIf(Resource):
+    def get(self, puuid):
+        log = ApplicationLogic()
+        return log.get_playerinfo1_with_puuid(puuid)
+    
 @lolturnier.route('/riot/get-playerinfo2/<string:puuid>')
 class RiotAPIb(Resource):
     def get(self, puuid):
