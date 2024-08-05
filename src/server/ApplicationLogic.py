@@ -110,7 +110,7 @@ class ApplicationLogic(object):
           team_users = [{'team_id': team._id}]
           users = self.get_user_by_team(team._id)
           for user in users:
-              user_info = self.get_playerinfo_important(user['sum_name'], user['tag_line'])
+              user_info = self.get_playerinfo_important_puuid(user['puuid'])
               user_info['role'] = user['role'] 
 
               #rank mean ermitteln ---------------------------------------------
@@ -356,33 +356,49 @@ class ApplicationLogic(object):
     response = self.riot_api.fetch_playerinfo(sum_id)
     return response
   
-  def get_playerinfo_all(self, sumName, tagLine):
-      log = ApplicationLogic()
-      response_all = {}
-
-      # Erstes Response-Dictionary unverändert hinzufügen
-      response1 = log.get_playerinfo1(sumName, tagLine)
-      response_all.update(response1)
-
-      # Zweites Response-Dictionary filtern und hinzufügen
-      response2 = log.get_playerinfo2(response1['puuid'])
-      filtered_response2 = {key: response2[key] for key in ['id', 'profileIconId', 'summonerLevel']}
-      response_all.update(filtered_response2)
-
-      # Drittes Response-Dictionary (Liste von Dictionaries) filtern und hinzufügen
-      response3 = log.get_playerinfo3(response2['id'])
-      keys_to_keep = ['queueType', 'tier', 'rank', 'leaguePoints', 'wins', 'losses']
-      filtered_response3 = [{key: item[key] for key in keys_to_keep if key in item} for item in response3]
-      response_all['rankedInfo'] = filtered_response3
-
-      return response_all
-
   def get_playerinfo_important(self, sumName, tagLine):
     log = ApplicationLogic()
     response_all = {}
 
     # Erstes Response-Dictionary unverändert hinzufügen
     response1 = log.get_playerinfo1(sumName, tagLine)
+    response_all.update(response1)
+
+    # Zweites Response-Dictionary filtern und hinzufügen
+    response2 = log.get_playerinfo2(response1['puuid'])
+    filtered_response2 = {key: response2[key] for key in ['id', 'profileIconId', 'summonerLevel']}
+    response_all.update(filtered_response2)
+
+    # Drittes Response-Dictionary (Liste von Dictionaries) filtern und hinzufügen
+    response3 = log.get_playerinfo3(response2['id'])
+    keys_to_keep = ['queueType', 'tier', 'rank', 'leaguePoints', 'wins', 'losses']
+    
+    # Suche nach dem gewünschten queueType
+    ranked_info = None
+    for item in response3:
+        if item.get('queueType') == 'RANKED_SOLO_5x5':
+            ranked_info = {key: item[key] for key in keys_to_keep if key in item}
+            break
+    
+    # Falls "RANKED_SOLO_5x5" nicht gefunden wurde, nach "RANKED_FLEX_SR" suchen
+    if ranked_info is None:
+        for item in response3:
+            if item.get('queueType') == 'RANKED_FLEX_SR':
+                ranked_info = {key: item[key] for key in keys_to_keep if key in item}
+                break
+    
+    # Falls ein passendes Dictionary gefunden wurde, hinzufügen
+    if ranked_info:
+        response_all.update(ranked_info)
+
+    return response_all
+  
+  def get_playerinfo_important_puuid(self, puuid):
+    log = ApplicationLogic()
+    response_all = {}
+
+    # Erstes Response-Dictionary unverändert hinzufügen
+    response1 = log.get_playerinfo1_with_puuid(puuid)
     response_all.update(response1)
 
     # Zweites Response-Dictionary filtern und hinzufügen
@@ -431,7 +447,7 @@ class ApplicationLogic(object):
           try:
               # Versucht, Spielerinformationen zu erhalten
               user_id = _user._id
-              player_info = log.get_playerinfo_important(_user._sum_name, _user._tag_line)
+              player_info = log.get_playerinfo_important_puuid(_user._puuid)
               player_info['user_id'] = user_id
               if player_info:
                   # Fall 3: Der User ist in der Datenbank und die Anfrage hat funktioniert

@@ -19,6 +19,7 @@ function App() {
   const [user, setUser] = useState({
     signedIn: null,
     user_id: '',
+    puuid: '',
     sumName: '',
     tagLine: '',
     tier: '',
@@ -45,6 +46,7 @@ function App() {
         setUser((prevState) => ({
           ...prevState,
           user_id: data.user_id,
+          puuid: data.puuid,
           sumName: data.gameName,
           tagLine: data.tagLine,
           tier: data.tier,

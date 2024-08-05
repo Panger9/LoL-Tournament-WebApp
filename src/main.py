@@ -25,8 +25,7 @@ lolturnier = api.namespace('lolturnier', description='Funktionen des SmartFridge
 # BusinessObject dient als Basisklasse, auf der die weiteren Strukturen aufsetzen.
 user = api.model('user', {
     'id': fields.Integer(attribute='_id'),
-    'sum_name': fields.String(attribute='_sum_name'),
-    'tag_line': fields.String(attribute='_tag_line'),
+    'puuid': fields.String(attribute='_puuid'),
     'token': fields.String(attribute='_token'),
 })
 
@@ -417,7 +416,7 @@ class RiotAPIa(Resource):
         log = ApplicationLogic()
         return log.get_playerinfo1(sumName, tagLine)
     
-@lolturnier.route('/riot/get-playerinfo1/<string:puuid>')
+@lolturnier.route('/riot/get-playerinfo1-puuid/<string:puuid>')
 class RiotAPIf(Resource):
     def get(self, puuid):
         log = ApplicationLogic()
@@ -435,17 +434,17 @@ class RiotAPIc(Resource):
         log = ApplicationLogic()
         return log.get_playerinfo3(sum_id)
 
-@lolturnier.route('/riot/get-playerinfo_all/<string:sumName>/<string:tagLine>')
-class RiotAPId(Resource):
-    def get(self, sumName, tagLine):
-        log = ApplicationLogic()
-        return log.get_playerinfo_all(sumName, tagLine)
-    
 @lolturnier.route('/riot/get-playerinfo_important/<string:sumName>/<string:tagLine>')
 class RiotAPIe(Resource):
     def get(self, sumName, tagLine):
         log = ApplicationLogic()
         return log.get_playerinfo_important(sumName, tagLine)
+    
+@lolturnier.route('/riot/get-playerinfo_important-puuid/<string:puuid>')
+class RiotAPId(Resource):
+    def get(self, puuid):
+        log = ApplicationLogic()
+        return log.get_playerinfo_important_puuid(puuid)
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # Anfragen an die Riot API und die Datenbank

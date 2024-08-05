@@ -31,10 +31,10 @@ CREATE TABLE turniere (
   name varchar(100) NOT NULL,
   team_size int NOT NULL DEFAULT 8,
   turnier_owner int NOT NULL,
-  start_date datetime DEFAULT CURRENT_TIMESTAMP
+  start_date varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   
-INSERT INTO turniere (id, name, team_size, turnier_owner) VALUES (1, 'Testturnier', 4, 3), (2, 'leeresTurnier', 8, 1);
+INSERT INTO turniere (id, name, team_size, turnier_owner, start_date) VALUES (1, 'Testturnier', 4, 3, '04.08.2024/20:15'), (2, 'leeresTurnier', 8, 1, '04.08.2024/18:15');
 
 
 CREATE TABLE user_team (

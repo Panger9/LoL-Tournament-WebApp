@@ -48,7 +48,7 @@ function RegisterDialog() {
 
     let iconChanged = false
 
-    const res = await fetch(`/lolturnier/riot/get-playerinfo_important/${inputSumName}/${inputTagLine}`)
+    const res = await fetch(`/lolturnier/riot/get-playerinfo_important-puuid/${accountInfo.puuid}`)
     if (res.ok) {
       const data = await res.json()
       if (!(data.profileIconId === accountInfo.profileIconId)){
@@ -66,7 +66,7 @@ function RegisterDialog() {
 
     if(iconChanged){
       try {
-        let user = {id: 0, sum_name: accountInfo.gameName, tag_line: accountInfo.tagLine, token: 'fill'}
+        let user = {id: 0, puuid: accountInfo.puuid, token: 'fill'}
         const res = await fetch(`/lolturnier/user`, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
