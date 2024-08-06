@@ -3,30 +3,18 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../App';
 import PlayerinfoSmall from '../components/PlayerInfoSmall';
+import LinearProgress from '@mui/material/LinearProgress';
+import { useGet } from '../components/useFetch';
 
 const TurnierDetails = () => {
 
   let { TurnierId } = useParams();
-
-  const [turnier, setTurnier] = useState('')
-  const [isPending, setIsPending] = useState(false)
-  const [reload, setReload] = useState(false)
-
-
-
   const user = useContext(UserContext)
 
-  useEffect (() => {
+  const [reload, setReload] = useState(false)
+  const {data: turnier, isPending, error} = useGet(`/lolturnier/user-by-team-and-turnier/${TurnierId}`, [reload] )
+ 
 
-    const fetchTurnier = async () => {
-      const res = await fetch(`/lolturnier/user-by-team-and-turnier/${TurnierId}`)
-      const data = await res.json()
-      setTurnier(data)
-    }
-
-    fetchTurnier()
-
-  },[reload])
 
   const joinTeam = async (user_id, team_id, turnier_id) => {
     const res = await fetch(`/lolturnier/user-team-turnier/${user_id}/${team_id}/${turnier_id}`,{
@@ -40,7 +28,6 @@ const TurnierDetails = () => {
       method:"DELETE"
     })
     setReload(!reload)
-
   }
   const isInTeam = (teamIndex) => {
 
@@ -58,8 +45,13 @@ const TurnierDetails = () => {
   }
 
   return ( 
+    <>
+    {isPending && <LinearProgress></LinearProgress>}
+    {error && <Typography color="error" >{error}</Typography>}
+    
     <Grid container spacing={3}  >
-      {isPending && 'Daten werden geladen'}
+      
+
       {(turnier && user) && turnier.map((team, teamIndex) => (
         <Grid item xs={12} sm={6} lg={3} key={teamIndex} >
           <Box sx={{backgroundColor:"#171717", borderRadius:"18px", display:"flex", flexDirection:"column", padding:"20px"}}>
@@ -90,6 +82,7 @@ const TurnierDetails = () => {
         </Grid>
       ))}
     </Grid>
+    </>
 );
 }
  

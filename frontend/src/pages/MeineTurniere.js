@@ -1,29 +1,23 @@
 import { Box, List, Typography, ListItem } from "@mui/material";
 import { useEffect, useContext, useState } from "react";
 import { UserContext } from '../App';
+import { useGet } from '../components/useFetch'
+import LinearProgress from '@mui/material/LinearProgress';
 import TurnierListe from "../components/TurnierListe";
 
 const MeineTurniere = () => {
 
   const user = useContext(UserContext)
-  const [turnierList, setTurnierList] = useState([])
 
-  useEffect(() => {
-
-    const fetchMeineTurniere = async () => {
-      const res = await fetch(`/lolturnier/turnier-by-user-id/${user.user_id}`)
-      const data = await res.json()
-      console.log(data)
-      setTurnierList(data)
-    }
-
-    fetchMeineTurniere() 
-  },[user])
+  const {data, isPending, error} = useGet(`/lolturnier/turnier-by-user-id/${user.user_id}`)
 
   return ( 
     <Box>
       
-      <TurnierListe liste={turnierList}></TurnierListe>
+      {isPending && <LinearProgress/>}
+      {error && <Typography color="error" >{error}</Typography>}
+
+      <TurnierListe liste={data}></TurnierListe>
 
       
     </Box>

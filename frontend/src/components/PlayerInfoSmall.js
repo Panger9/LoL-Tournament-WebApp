@@ -12,7 +12,7 @@ const roleIcons = {
   top: Topicon,
   jgl: Jglicon,
   mid: Midicon,
-  bot: Adcicon,
+  adc: Adcicon,
   sup: Suppicon,
   fill: Fillicon
 };

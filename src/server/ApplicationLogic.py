@@ -49,7 +49,7 @@ class ApplicationLogic(object):
             'PLATINUM IV', 'PLATINUM III', 'PLATINUM II', 'PLATINUM I',
             'EMERALD IV', 'EMERALD III', 'EMERALD II', 'EMERALD I', 
             'DIAMOND IV', 'DIAMOND III', 'DIAMOND II', 'DIAMOND I',
-            'MASTER', 'GRANDMASTER', 'CHALLENGER'
+            'MASTER I', 'GRANDMASTER I', 'CHALLENGER I'
         ]
 
         all_points = 0
@@ -108,28 +108,35 @@ class ApplicationLogic(object):
         return mapper.find_by_team(team_id)
   
   def get_user_by_team_and_turnier(self, turnier_id):
+      
       result = []
-      all_teams = self.get_team_by_turnier_id(turnier_id)
-      for team in all_teams:
-          all_player_elo = []
-          team_users = [{'team_id': team._id}]
-          users = self.get_user_by_team(team._id)
-          for user in users:
-              user_info = self.get_playerinfo_important_puuid(user['puuid'])
-              user_info['role'] = user['role'] 
 
-              #rank mean ermitteln ---------------------------------------------
-              if 'tier' in user_info and user_info['tier'] is not None:
-                  player_elo = user_info['tier'] + ' ' + user_info['rank']
-              else:
-                  player_elo = user_info['summonerLevel']
-              all_player_elo.append(player_elo)
-              #rank mean ermitteln ---------------------------------------------
+      try:
+         all_teams = self.get_team_by_turnier_id(turnier_id)
+         for team in all_teams:
+            all_player_elo = []
+            team_users = [{'team_id': team._id}]
+            users = self.get_user_by_team(team._id)
+            for user in users:
+               user_info = self.get_playerinfo_important_puuid(user['puuid'])
+               user_info['role'] = user['role'] 
 
-              team_users.append(user_info)
-          mean_team_elo = self.rank_mean(all_player_elo)
-          team_users[0]['mean_rank'] = mean_team_elo
-          result.append(team_users)
+               #rank mean ermitteln ---------------------------------------------
+               if 'tier' in user_info and user_info['tier'] is not None:
+                     player_elo = user_info['tier'] + ' ' + user_info['rank']
+               else:
+                     player_elo = user_info['summonerLevel']
+               all_player_elo.append(player_elo)
+               #rank mean ermitteln ---------------------------------------------
+
+               team_users.append(user_info)
+            mean_team_elo = self.rank_mean(all_player_elo)
+            team_users[0]['mean_rank'] = mean_team_elo
+            result.append(team_users)
+
+      except Exception as e:
+         return {'error':str(e)}
+  
       return result
 
   def create_user(self, user):
@@ -311,6 +318,10 @@ class ApplicationLogic(object):
   def get_user_team_entry_by_user_id(self, user_id):
      with UserTeamMapper() as mapper:
         return mapper.find_by_user_id(user_id)
+
+  def get_user_team_entry_by_team_id(self, team_id):
+     with UserTeamMapper() as mapper:
+        return mapper.find_by_team_id(team_id)
      
   def get_user_team_entry_by_ids(self, user_id, team_id):
      with UserTeamMapper() as mapper:
@@ -342,6 +353,10 @@ class ApplicationLogic(object):
      return result
   
   def add_user_to_team(self, user_id, team_id, turnier_id):
+     
+     all_user_team = self.get_user_team_entry_by_team_id(team_id)
+     if len(all_user_team) >= 5:
+         return 'Team bereits voll'
      
      isInTurnier = self.get_user_turnier_entry_by_ids(user_id, turnier_id)
      deleted_entries =  'nichts gelöscht'
@@ -432,36 +447,46 @@ class ApplicationLogic(object):
     log = ApplicationLogic()
     response_all = {}
 
-    # Erstes Response-Dictionary unverändert hinzufügen
-    response1 = log.get_playerinfo1_with_puuid(puuid)
-    response_all.update(response1)
+    try:
+        # Erstes Response-Dictionary unverändert hinzufügen
+        response1 = log.get_playerinfo1_with_puuid(puuid)
+        if 'error' in response1:
+            return response1  # Fehler direkt zurückgeben
+        response_all.update(response1)
 
-    # Zweites Response-Dictionary filtern und hinzufügen
-    response2 = log.get_playerinfo2(response1['puuid'])
-    filtered_response2 = {key: response2[key] for key in ['id', 'profileIconId', 'summonerLevel']}
-    response_all.update(filtered_response2)
+        # Zweites Response-Dictionary filtern und hinzufügen
+        response2 = log.get_playerinfo2(response1['puuid'])
+        if 'error' in response2:
+            return response2  # Fehler direkt zurückgeben
+        filtered_response2 = {key: response2[key] for key in ['id', 'profileIconId', 'summonerLevel']}
+        response_all.update(filtered_response2)
 
-    # Drittes Response-Dictionary (Liste von Dictionaries) filtern und hinzufügen
-    response3 = log.get_playerinfo3(response2['id'])
-    keys_to_keep = ['queueType', 'tier', 'rank', 'leaguePoints', 'wins', 'losses']
-    
-    # Suche nach dem gewünschten queueType
-    ranked_info = None
-    for item in response3:
-        if item.get('queueType') == 'RANKED_SOLO_5x5':
-            ranked_info = {key: item[key] for key in keys_to_keep if key in item}
-            break
-    
-    # Falls "RANKED_SOLO_5x5" nicht gefunden wurde, nach "RANKED_FLEX_SR" suchen
-    if ranked_info is None:
+        # Drittes Response-Dictionary (Liste von Dictionaries) filtern und hinzufügen
+        response3 = log.get_playerinfo3(response2['id'])
+        if 'error' in response3:
+            return response3  # Fehler direkt zurückgeben
+        keys_to_keep = ['queueType', 'tier', 'rank', 'leaguePoints', 'wins', 'losses']
+        
+        # Suche nach dem gewünschten queueType
+        ranked_info = None
         for item in response3:
-            if item.get('queueType') == 'RANKED_FLEX_SR':
+            if item.get('queueType') == 'RANKED_SOLO_5x5':
                 ranked_info = {key: item[key] for key in keys_to_keep if key in item}
                 break
-    
-    # Falls ein passendes Dictionary gefunden wurde, hinzufügen
-    if ranked_info:
-        response_all.update(ranked_info)
+        
+        # Falls "RANKED_SOLO_5x5" nicht gefunden wurde, nach "RANKED_FLEX_SR" suchen
+        if ranked_info is None:
+            for item in response3:
+                if item.get('queueType') == 'RANKED_FLEX_SR':
+                    ranked_info = {key: item[key] for key in keys_to_keep if key in item}
+                    break
+        
+        # Falls ein passendes Dictionary gefunden wurde, hinzufügen
+        if ranked_info:
+            response_all.update(ranked_info)
+
+    except Exception as e:
+        return {"error": str(e)}
 
     return response_all
   

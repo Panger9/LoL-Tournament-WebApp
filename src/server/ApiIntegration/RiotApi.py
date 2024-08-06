@@ -2,7 +2,7 @@ import requests
 
 class RiotAPIIntegration:
     def __init__(self):
-        self.api_key = 'RGAPI-1ee9cbe3-0803-430f-b991-426cec2c259c'
+        self.api_key = 'RGAPI-fc4374a3-ee42-4271-9ec7-686e46deb6b6'
         # LINK ZUM KEY: https://developer.riotgames.com/
 
     def fetch_puuid(self, sumName, tagLine):
@@ -29,4 +29,4 @@ class RiotAPIIntegration:
         if response.status_code == 200:
             return response.json()
         else:
-            return {'error': 'Failed to fetch data from Riot API'}, response.status_code
+            return {'error': 'Failed to fetch data from Riot API', 'status_code': response.status_code}

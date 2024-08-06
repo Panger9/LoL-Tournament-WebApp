@@ -1,26 +1,23 @@
-import {Box, Typography} from '@mui/material'
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Typography } from '@mui/material';
 import TurnierListe from '../components/TurnierListe';
+import { useGet } from '../components/useFetch';
+import LinearProgress from '@mui/material/LinearProgress';
 
 const Turnier = () => {
 
 
-  const Navigate = useNavigate()
-  const [turniere, setturniere] = useState([])
-
-  useEffect(() => {
-    fetch('/lolturnier/turnier-with-slots')
-    .then((res) => res.json())
-    .then((data) => {
-      setturniere(data)
-    })
-  }, [])
+  const { data, isPending, error } = useGet(`/lolturnier/turnier-with-slots`)
 
 
-  return ( 
-    <TurnierListe liste={turniere}></TurnierListe>
-   );
+  return (
+
+    <Box>
+      {isPending && <LinearProgress />}
+      {error && <Typography color="error" >{error}</Typography>}
+      <TurnierListe liste={data}></TurnierListe>
+    </Box>
+
+  );
 }
- 
+
 export default Turnier;
