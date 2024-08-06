@@ -37,6 +37,7 @@ function RegisterDialog() {
       setIsPending(false)
       const data = await res.json()
       setAccountInfo(data)
+      console.log(data)
     }
     else {
       setError1('Dein Account wurde nicht gefunden :(. Probiere es erneut')
@@ -146,7 +147,7 @@ function RegisterDialog() {
             <Typography>
               Dein Profil wurde gefunden!
             </Typography>
-            <Playerinfo name={accountInfo.gameName} tag={accountInfo.tagLine} tier={accountInfo.tier} level={accountInfo.summonerLevel} profileIconId={accountInfo.profileIconId}></Playerinfo>
+            <Playerinfo name={accountInfo.gameName} tag={accountInfo.tagLine} tier={accountInfo.tier ? accountInfo.tier : 'UNRANKED'} rank={accountInfo.rank ? accountInfo.rank : ''} level={accountInfo.summonerLevel} profileIconId={accountInfo.profileIconId}></Playerinfo>
             <Typography>
               Um zu beweisen, dass es auch wirklich dir gehört, ändere nun dein Profilbild und bestätige, sobald du dies getan hast.
             </Typography>

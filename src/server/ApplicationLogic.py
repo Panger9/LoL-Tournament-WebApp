@@ -407,37 +407,46 @@ class ApplicationLogic(object):
   def get_playerinfo_important(self, sumName, tagLine):
     log = ApplicationLogic()
     response_all = {}
+    try:
+        # Erstes Response-Dictionary unverändert hinzufügen
+        response1 = log.get_playerinfo1(sumName, tagLine)
+        if 'error' in response1:
+               return response1 
+        response_all.update(response1)
 
-    # Erstes Response-Dictionary unverändert hinzufügen
-    response1 = log.get_playerinfo1(sumName, tagLine)
-    response_all.update(response1)
+        # Zweites Response-Dictionary filtern und hinzufügen
+        response2 = log.get_playerinfo2(response1['puuid'])
+        if 'error' in response2:
+            return response2  # Fehler direkt zurückgeben
+        filtered_response2 = {key: response2[key] for key in ['id', 'profileIconId', 'summonerLevel']}
+        response_all.update(filtered_response2)
 
-    # Zweites Response-Dictionary filtern und hinzufügen
-    response2 = log.get_playerinfo2(response1['puuid'])
-    filtered_response2 = {key: response2[key] for key in ['id', 'profileIconId', 'summonerLevel']}
-    response_all.update(filtered_response2)
-
-    # Drittes Response-Dictionary (Liste von Dictionaries) filtern und hinzufügen
-    response3 = log.get_playerinfo3(response2['id'])
-    keys_to_keep = ['queueType', 'tier', 'rank', 'leaguePoints', 'wins', 'losses']
-    
-    # Suche nach dem gewünschten queueType
-    ranked_info = None
-    for item in response3:
-        if item.get('queueType') == 'RANKED_SOLO_5x5':
-            ranked_info = {key: item[key] for key in keys_to_keep if key in item}
-            break
-    
-    # Falls "RANKED_SOLO_5x5" nicht gefunden wurde, nach "RANKED_FLEX_SR" suchen
-    if ranked_info is None:
+        # Drittes Response-Dictionary (Liste von Dictionaries) filtern und hinzufügen
+        response3 = log.get_playerinfo3(response2['id'])
+        if 'error' in response3:
+            return response3  # Fehler direkt zurückgeben
+        keys_to_keep = ['queueType', 'tier', 'rank', 'leaguePoints', 'wins', 'losses']
+        
+        # Suche nach dem gewünschten queueType
+        ranked_info = None
         for item in response3:
-            if item.get('queueType') == 'RANKED_FLEX_SR':
+            if item.get('queueType') == 'RANKED_SOLO_5x5':
                 ranked_info = {key: item[key] for key in keys_to_keep if key in item}
                 break
-    
-    # Falls ein passendes Dictionary gefunden wurde, hinzufügen
-    if ranked_info:
-        response_all.update(ranked_info)
+        
+        # Falls "RANKED_SOLO_5x5" nicht gefunden wurde, nach "RANKED_FLEX_SR" suchen
+        if ranked_info is None:
+            for item in response3:
+                if item.get('queueType') == 'RANKED_FLEX_SR':
+                    ranked_info = {key: item[key] for key in keys_to_keep if key in item}
+                    break
+        
+        # Falls ein passendes Dictionary gefunden wurde, hinzufügen
+        if ranked_info:
+            response_all.update(ranked_info)
+
+    except Exception as e:
+        return {"error": str(e)}
 
     return response_all
   
