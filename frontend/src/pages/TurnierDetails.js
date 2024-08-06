@@ -9,7 +9,7 @@ import { useGet } from '../components/useFetch';
 const TurnierDetails = () => {
 
   let { TurnierId } = useParams();
-  const user = useContext(UserContext)
+  const {user} = useContext(UserContext)
 
   const [reload, setReload] = useState(false)
   const {data: turnier, isPending, error} = useGet(`/lolturnier/user-by-team-and-turnier/${TurnierId}`, [reload] )

@@ -27,6 +27,12 @@ user = api.model('user', {
     'id': fields.Integer(attribute='_id'),
     'puuid': fields.String(attribute='_puuid'),
     'token': fields.String(attribute='_token'),
+    'gameName': fields.String(attribute='_gameName'),
+    'tagLine': fields.String(attribute='_tagLine'),
+    'profileIconId': fields.Integer(attribute='_profileIconId'),
+    'summonerLevel': fields.Integer(attribute='_summonerLevel'),
+    'tier': fields.String(attribute='_tier'),
+    'rank': fields.String(attribute='_rank')
 })
 
 team = api.model('team', {
@@ -166,15 +172,6 @@ class UserOperationsTeamId(Resource):
 
     return all_user
 
-@lolturnier.route('/user-login/<string:token>')
-@lolturnier.response(500, 'Server Error')
-class UserOperationsLogin(Resource):
-   
-   def get(self, token):
-      log = ApplicationLogic()
-      response = log.login(token)
-      return response
-   
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # TURNIERE
@@ -472,7 +469,25 @@ class RiotAPId(Resource):
 # Anfragen an die Riot API und die Datenbank
 #------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+@lolturnier.route('/user-login/<string:token>')
+@lolturnier.response(500, 'Server Error')
+class UserOperationsLogin(Resource):
+   
+   @lolturnier.marshal_with(user)
+   def get(self, token):
+      log = ApplicationLogic()
+      response = log.login(token)
+      return response
+   
+@lolturnier.route('/user-refresh/<int:id>')
+@lolturnier.response(500, 'Server Error')
+class UserOperationsRefresh(Resource):
+   
+   @lolturnier.marshal_with(user)
+   def get(self, id):
+      log = ApplicationLogic()
+      response = log.refresh(id)
+      return response
 
 
 if __name__ == '__main__':

@@ -37,7 +37,7 @@ const Playerinfo = ({ name, tag, level, tier, rank, profileIconId }) => {
         </Box>
         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", gap: "5px" }}>
           <Typography color="textSecondary" variant="body2">{level}</Typography>
-          <Typography color="textSecondary" variant="body2">{tier ? tier + ' ' + rank: 'UNRANKED'}</Typography>
+          <Typography color="textSecondary" variant="body2">{tier !== 'UNRANKED' ? tier + ' ' + rank: 'UNRANKED'}</Typography>
         </Box>
       </Box>
     </Box>

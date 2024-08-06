@@ -72,7 +72,8 @@ function RegisterDialog() {
 
         if (res1.status === 404) {
 
-          let user = {id: 0, puuid: accountInfo.puuid, token: 'fill'}
+          let user = {id: 0, puuid: accountInfo.puuid, token: 'fill', gameName: accountInfo.gameName, tagLine: accountInfo.tagLine, 
+                      profileIconId: accountInfo.profileIconId, summonerLevel: accountInfo.summonerLevel, tier: accountInfo.tier, rank: accountInfo.rank}
 
           const res = await fetch(`/lolturnier/user`, {
             method: "POST",

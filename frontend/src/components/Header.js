@@ -1,15 +1,16 @@
-import {Box, Typography, AppBar, Button} from '@mui/material'
+import {Box, Typography, AppBar, Button, SvgIcon} from '@mui/material'
 import Playerinfo from './PlayerInfo';
 import { useLocation, Link, Navigate, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
 import ReigsterDialog from './RegisterDialog'
 import CustomDialog from './CustomDialog';
+import CachedIcon from '@mui/icons-material/Cached';
 
 const Header = () => {
 
   const location = useLocation();
-  const user = useContext(UserContext)
+  const {user, setUser} = useContext(UserContext)
   const Navigate = useNavigate()
 
   const [openDialog, setOpenDialog] = useState(false)
@@ -30,6 +31,25 @@ const Header = () => {
     Navigate('/turniere')
     window.location.reload()
 
+  }
+
+  const handleRefresh = async () => {
+    const res = await fetch(`/lolturnier/user-refresh/${user.user_id}`)
+    const data  = await res.json()
+
+    setUser((prevState) => ({
+      ...prevState,
+      user_id: data.id,
+      puuid: data.puuid,
+      sumName: data.gameName,
+      tagLine: data.tagLine,
+      tier: data.tier,
+      rank: data.rank,
+      level: data.summonerLevel,
+      profileIconId: data.profileIconId,
+      signedIn: true,
+      token: data.token
+    }))
   }
 
   return (
@@ -56,6 +76,7 @@ const Header = () => {
       </Box>
 
       <Box sx={{display:"flex", gap:"10px"}}>
+        <Button variant='contained' onClick={() => handleRefresh(user.user_id)} ><SvgIcon component={CachedIcon}></SvgIcon></Button>
         {user.signedIn ? 
         <Button variant='contained' onClick={() => {setOpenDialog(true)}}>Verbindung trennen</Button>
         : 

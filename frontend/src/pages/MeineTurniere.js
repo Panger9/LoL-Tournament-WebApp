@@ -7,7 +7,7 @@ import TurnierListe from "../components/TurnierListe";
 
 const MeineTurniere = () => {
 
-  const user = useContext(UserContext)
+  const {user} = useContext(UserContext)
 
   const {data, isPending, error} = useGet(`/lolturnier/turnier-by-user-id/${user.user_id}`)
 

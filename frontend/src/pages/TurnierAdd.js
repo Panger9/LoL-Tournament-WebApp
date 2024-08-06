@@ -12,7 +12,7 @@ import deAT from 'date-fns/locale/de-AT';
 import { useNavigate } from 'react-router-dom';
 
 const TurnierAdd = () => {
-  const user = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   const [turnierGröße, setTurniergröße] = useState('');
   const [turnierName, setTurnierName] = useState('');

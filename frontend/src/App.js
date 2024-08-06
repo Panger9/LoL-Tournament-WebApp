@@ -45,7 +45,7 @@ function App() {
         console.log(data)
         setUser((prevState) => ({
           ...prevState,
-          user_id: data.user_id,
+          user_id: data.id,
           puuid: data.puuid,
           sumName: data.gameName,
           tagLine: data.tagLine,
@@ -65,7 +65,7 @@ function App() {
 
 
   return (
-    <UserContext.Provider value={user}>
+    <UserContext.Provider value={{user, setUser}}>
     <Router>
       <Box sx={{
         width: "100vw",

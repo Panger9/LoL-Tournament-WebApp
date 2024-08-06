@@ -19,7 +19,7 @@ const roleIcons = {
 
 const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role, team_id }) => {
 
-  const user = useContext(UserContext)
+  const {user} = useContext(UserContext)
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRole, setCurrentRole] = useState(role);
@@ -71,7 +71,7 @@ const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role, te
         >
           <Typography sx={{ ':hover': { color: "rgba(215,215,255,0.7)" } }}>{name}</Typography>
         </a>
-        <Typography color="textSecondary" variant="body2">{tier ? tier + ' ' + rank : 'UNRANKED'}</Typography>
+        <Typography color="textSecondary" variant="body2">{tier !== 'UNRANKED' ? tier + ' ' + rank : 'UNRANKED'}</Typography>
         <Box >
           <Box
             component="img"

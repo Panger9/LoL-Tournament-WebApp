@@ -41,7 +41,6 @@ class ApplicationLogic(object):
             return ''
 
         rank_to_points = [
-            'UNRANKED',
             'IRON IV', 'IRON III', 'IRON II', 'IRON I',
             'BRONZE IV', 'BRONZE III', 'BRONZE II', 'BRONZE I',
             'SILVER IV', 'SILVER III', 'SILVER II', 'SILVER I',
@@ -118,18 +117,17 @@ class ApplicationLogic(object):
             team_users = [{'team_id': team._id}]
             users = self.get_user_by_team(team._id)
             for user in users:
-               user_info = self.get_playerinfo_important_puuid(user['puuid'])
-               user_info['role'] = user['role'] 
 
                #rank mean ermitteln ---------------------------------------------
-               if 'tier' in user_info and user_info['tier'] is not None:
-                     player_elo = user_info['tier'] + ' ' + user_info['rank']
+               if 'tier' in user and user['tier'] != "UNRANKED" or None:
+                     player_elo = user['tier'] + ' ' + user['rank']
                else:
-                     player_elo = user_info['summonerLevel']
+                     player_elo = user['summonerLevel']
                all_player_elo.append(player_elo)
                #rank mean ermitteln ---------------------------------------------
 
-               team_users.append(user_info)
+               team_users.append(user)
+
             mean_team_elo = self.rank_mean(all_player_elo)
             team_users[0]['mean_rank'] = mean_team_elo
             result.append(team_users)
@@ -499,27 +497,35 @@ class ApplicationLogic(object):
       log = ApplicationLogic()
       _user = log.get_user_by_token(token)
       
-
       if _user is None:
           # Fall 1: Der User ist der Datenbank unbekannt
           response = ('Keinen User gefunden', 404)  # 404 Not Found
       else:
           try:
-              # Versucht, Spielerinformationen zu erhalten
-              user_id = _user._id
-              player_info = log.get_playerinfo_important_puuid(_user._puuid)
-              player_info['user_id'] = user_id
-              if player_info:
-                  # Fall 3: Der User ist in der Datenbank und die Anfrage hat funktioniert
-                  response = (player_info, 200)  # 200 OK
-              else:
-                  # Falls die Anfrage erfolgreich ist, aber keine Daten zurückkommen
-                  response = ('Keine Spielerinformationen gefunden', 204)  # 204 No Content
+            userNew = log.refresh(_user._id)
+            response = (userNew, 200)  # 200 OK
           except Exception as e:
               # Fall 2: Der User ist in der Datenbank, aber die Anfrage an die externe API hat nicht funktioniert
               response = ('Token vorhanden, Anfrage an Riot fehlgeschlagen', 502)  # 502 Bad Gateway
 
       return response
+  
+  def refresh(self, id):
+     log = ApplicationLogic()
+     _user = log.get_user_by_id(id)
+     new_info = log.get_playerinfo_important_puuid(_user._puuid)
+     _user.set_gameName(new_info['gameName'])
+     _user.set_tagLine(new_info['tagLine'])
+     _user.set_profileIconId(new_info['profileIconId'])
+     _user.set_summonerLevel(new_info['summonerLevel'])
+     _user.set_tier(new_info.get('tier',"UNRANKED"))
+     _user.set_rank(new_info.get('rank',""))
+
+     return log.update_user(_user)
+  
+
+
+
   
 
     
