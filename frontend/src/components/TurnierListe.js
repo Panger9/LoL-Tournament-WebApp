@@ -8,11 +8,12 @@ import GroupsIcon from '@mui/icons-material/Groups';
 const TurnierListe = ({ liste }) => {
   const navigate = useNavigate();
 
+
   return (
     <Box sx={{ bgcolor: "#121212", color: "#fff", padding: 2 }}>
       <Grid container spacing={2}>
         {liste && liste.map((e) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={e.id}>
+          <Grid item xs={12} sm={6} md={4} xl={2} key={e.id}>
             <Card
               sx={{
                 bgcolor: "#1e1e1e",
@@ -21,24 +22,12 @@ const TurnierListe = ({ liste }) => {
                 boxShadow: 3,
                 position: "relative",
                 overflow: "hidden",
+                transition: "0.3s",
+                cursor: "pointer",
                 '&:hover': {
                   boxShadow: 6,
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
                 },
-                cursor: "pointer",
-                '&:before': {
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: "rgba(255, 255, 255, 0.1)",
-                  opacity: 0,
-                  transition: "opacity 0.3s",
-                },
-                '&:hover:before': {
-                  opacity: 1,
-                }
               }}
               onClick={() => navigate(`/turniere/${e.id}`)}
             >
@@ -82,7 +71,7 @@ const TurnierListe = ({ liste }) => {
                   </Grid>
                   <Grid item>
                     <Typography variant="body2">
-                      {new Date(e.start_date).toLocaleString()}
+                    {e.start_date.split('/')[0]} | {e.start_date.split('/')[1] + ' Uhr'}
                     </Typography>
                   </Grid>
                 </Grid>

@@ -14,11 +14,14 @@ const MeineTurniere = () => {
   return ( 
     <Box>
       
+      {user.signedIn ? 
+      <>
       {isPending && <LinearProgress/>}
       {error && <Typography color="error" >{error}</Typography>}
 
       <TurnierListe liste={data}></TurnierListe>
-
+      </>
+      : 'Benutzer nicht angemeldet'}
       
     </Box>
     

@@ -2,7 +2,7 @@ import requests
 
 class RiotAPIIntegration:
     def __init__(self):
-        self.api_key = 'RGAPI-fc4374a3-ee42-4271-9ec7-686e46deb6b6'
+        self.api_key = 'RGAPI-c7e61da7-ed59-4e7b-b0b5-cd77646f5120'
         # LINK ZUM KEY: https://developer.riotgames.com/
 
     def fetch_puuid(self, sumName, tagLine):

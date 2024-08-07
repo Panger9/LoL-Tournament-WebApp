@@ -53,10 +53,10 @@ const TurnierDetails = () => {
       
 
       {(turnier && user) && turnier.map((team, teamIndex) => (
-        <Grid item xs={12} sm={6} lg={3} key={teamIndex} >
+        <Grid item xs={12} sm={6} lg={3} xl={1.5} key={teamIndex} >
           <Box sx={{backgroundColor:"#171717", borderRadius:"18px", display:"flex", flexDirection:"column", padding:"20px"}}>
           <Typography variant='h5'>Team {teamIndex + 1} ({team[0].mean_rank} )</Typography>
-          <Box sx={{display:"flex", flexDirection:"column", gap:"7px", margin:"20px 0px"}}>
+          <Box sx={{display:"flex", flexDirection:"column", gap:"7px", margin:"20px 0px", width:"100%"}}>
           {team.slice(1).map((user, userIndex) => (
           <>
           <PlayerinfoSmall name={user.gameName} tag={user.tagLine} tier={user.tier} level={user.summonerLevel} profileIconId={user.profileIconId} rank={user.rank} role={user.role} team_id={team[0].team_id}></PlayerinfoSmall>

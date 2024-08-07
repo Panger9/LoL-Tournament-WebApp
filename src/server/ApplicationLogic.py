@@ -213,6 +213,8 @@ class ApplicationLogic(object):
      all_turniere = self.get_all_turniere()
      for turnier in all_turniere:
         new_turnier = self.get_turnier_by_id(turnier._id)
+        owner = self.get_user_by_id(new_turnier['turnier_owner'])
+        new_turnier['turnier_owner'] = owner._gameName
         result.append(new_turnier)
      return result
 
