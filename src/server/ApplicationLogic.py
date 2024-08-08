@@ -26,6 +26,12 @@ class ApplicationLogic(object):
       token = ''.join(random.choice(characters) for _ in range(12))
       return token
   
+  def create_id(self):
+    # Erstellt eine Zeichenfolge, die aus 12 zufälligen Zahlen besteht
+    id = ''.join(str(random.randint(0, 9)) for _ in range(12))
+    # Wandelt die Zeichenfolge in einen Integer um
+    return int(id)
+  
   def validate_datetime_format(self, date_string):
     try:
         datetime.strptime(date_string, '%d.%m.%Y/%H:%M')
@@ -222,6 +228,9 @@ class ApplicationLogic(object):
         # Validierung von turnier._start_date
         if not self.validate_datetime_format(turnier._start_date):
             raise ValueError('Invalid date format. Expected format: DD.MM.JJJJ/hh:mm')
+        
+        new_id = self.create_id()
+        turnier.set_id(new_id)
 
         with TurnierMapper() as mapper:
             newTurnier = mapper.insert(turnier)

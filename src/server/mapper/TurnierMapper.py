@@ -35,12 +35,6 @@ class TurnierMapper(Mapper):
 
     def insert(self, turnier):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM turniere")
-        maxid = cursor.fetchone()[0]
-        if maxid is not None:
-            turnier.set_id(maxid + 1)
-        else:
-            turnier.set_id(1)
 
         cursor.execute(
             "INSERT INTO turniere (id, name, team_size, turnier_owner, start_date) VALUES (%s, %s, %s, %s, %s)",
