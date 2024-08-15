@@ -1,0 +1,8 @@
+dispatch:
+  - url: "*/lolturnier/*"
+    service: backend
+
+  - url: "lol-tournament-webapp.ey.r.appspot.com/*"
+    service: default
+
+  

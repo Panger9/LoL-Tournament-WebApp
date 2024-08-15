@@ -15,9 +15,9 @@ class Mapper (AbstractContextManager, ABC):
  
         if os.getenv('GAE_ENV', '').startswith('standard'):
             # Verbindung zwischen Google App Engine und Cloud SQL. App ist im Production Mode im Standard Environment
-            self._cnx = connector.connect(user='demo', password='Sopra123',
-                          unix_socket='/cloudsql/fullstack-sopra:europe-west3:fullstack-sopra-database',
-                          database='smartfridge')
+            self._cnx = connector.connect(user='demo', password='cCgGuU99',
+                          unix_socket='/cloudsql/lol-tournament-webapp:europe-west3:db-lol-tournament-webapp',
+                          database='lolturnier')
         else:
             # Ausführung des Codes in lokaler Umgebung  - mySQL-Datenbank
             self._cnx = connector.connect(user='root', password='123',

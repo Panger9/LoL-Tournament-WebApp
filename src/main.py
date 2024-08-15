@@ -20,7 +20,7 @@ CORS(app, resources=r'/lolturnier/*')
 api = Api(app, version='0.5', title='lolturnier API', description='verwalte Anfragen an das lolturnier Backend')
 
 # Namespace für die Strukturierung der API, alle wichtigen Operatoren werden unter dem Präfix lolturnier zusammengefasst
-lolturnier = api.namespace('lolturnier', description='Funktionen des SmartFridges')
+lolturnier = api.namespace('lolturnier', description='Funktionen der Tournament App')
 
 # BusinessObject dient als Basisklasse, auf der die weiteren Strukturen aufsetzen.
 user = api.model('user', {
