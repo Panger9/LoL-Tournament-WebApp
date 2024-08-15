@@ -30,7 +30,8 @@ function RegisterDialog() {
 
     setIsPending(true)
     setError1(false)
-    const res = await fetch(`/lolturnier/riot/get-playerinfo_important/${inputSumName}/${inputTagLine}`)
+    const sanitizedTagLine = inputTagLine.replace(/^#/, ''); // Entferne das Hash-Symbol, falls vorhanden
+    const res = await fetch(`/lolturnier/riot/get-playerinfo_important/${inputSumName}/${sanitizedTagLine}`)
     if (res.ok) {
       setPhase1(false)
       setPhase2(true)
@@ -48,7 +49,6 @@ function RegisterDialog() {
   const hasIconChanged = async () => {
 
     let iconChanged = false
-
     const res = await fetch(`/lolturnier/riot/get-playerinfo_important-puuid/${accountInfo.puuid}`)
     if (res.ok) {
       const data = await res.json()
