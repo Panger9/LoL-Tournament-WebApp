@@ -34,20 +34,20 @@ INSERT INTO users VALUES
 -- Table structure for table `users`
 CREATE TABLE teams (
   id int PRIMARY KEY NOT NULL DEFAULT '0',
-  turnier_id int NOT NULL DEFAULT '0'
+  turnier_id bigint NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO teams VALUES (1,1),(2,1),(3,1),(4,1),(5,2),(6,2),(7,2),(8,2);
 
 CREATE TABLE turniere (
-  id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  id bigint PRIMARY KEY NOT NULL,
   name varchar(100) NOT NULL,
   team_size int NOT NULL DEFAULT 8,
   turnier_owner int NOT NULL,
   start_date varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   
-INSERT INTO turniere (id, name, team_size, turnier_owner, start_date) VALUES (1, 'Testturnier', 4, 6, '04.08.2024/20:15'),(2, 'Testturnier2', 4, 1, '06.08.2024/20:15');
+INSERT INTO turniere (id, name, team_size, turnier_owner, start_date) VALUES (1, 'Testturnier', 4, 2, '04.08.2024/20:15'),(2, 'Testturnier2', 4, 1, '06.08.2024/20:15');
 
 CREATE TABLE user_team (
   user_id int,
@@ -60,7 +60,7 @@ INSERT INTO user_team VALUES (1,1,'jgl'),(2,1,'top'),(3,1,'mid'),(4,1,'adc'), (5
 
 CREATE TABLE user_turnier (
   user_id int,
-  turnier_id int,
+  turnier_id bigint,
   PRIMARY KEY (user_id, turnier_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

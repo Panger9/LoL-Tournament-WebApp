@@ -13,14 +13,14 @@ const TurnierDetails = () => {
 
   const [reload, setReload] = useState(false)
   const {data: turnier, isPending, error} = useGet(`/lolturnier/user-by-team-and-turnier/${TurnierId}`, [reload] )
- 
-
+  
 
   const joinTeam = async (user_id, team_id, turnier_id) => {
     const res = await fetch(`/lolturnier/user-team-turnier/${user_id}/${team_id}/${turnier_id}`,{
       method:"POST",
     })
     setReload(!reload)
+    
   }
 
   const leaveTeam = async (User_id, Team_id, Turnier_id) => {

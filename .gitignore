@@ -146,6 +146,6 @@ yarn-error.log*
 frontend/package-lock.json
 
 #login
-/scr/server/dblogin/login.py
+/src/server/login.py
 
 

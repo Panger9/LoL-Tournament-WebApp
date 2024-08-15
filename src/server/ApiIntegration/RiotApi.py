@@ -1,8 +1,9 @@
 import requests
+from server.login import riot_key
 
 class RiotAPIIntegration:
     def __init__(self):
-        self.api_key = 'RGAPI-c398c4aa-4674-4e8b-ad23-f4914a1db940'
+        self.api_key = riot_key
         # LINK ZUM KEY: https://developer.riotgames.com/
 
     def fetch_puuid(self, sumName, tagLine):
