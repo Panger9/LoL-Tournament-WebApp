@@ -1,10 +1,9 @@
 import { Box, SvgIcon, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 
 const Playerinfo = ({ name, tag, level, tier, rank, profileIconId }) => {
 
-  const Navigate = useNavigate()
+
 
   return (
 

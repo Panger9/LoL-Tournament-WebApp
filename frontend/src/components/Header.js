@@ -28,7 +28,7 @@ const Header = () => {
       method: "DELETE"
     })
     localStorage.removeItem('tournament_token')
-    Navigate('/turniere')
+    Navigate('/turniere/')
     window.location.reload()
 
   }

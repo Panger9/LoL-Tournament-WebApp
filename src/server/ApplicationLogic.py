@@ -220,7 +220,10 @@ class ApplicationLogic(object):
      for turnier in all_turniere:
         new_turnier = self.get_turnier_by_id(turnier._id)
         owner = self.get_user_by_id(new_turnier['turnier_owner'])
-        new_turnier['turnier_owner'] = owner._gameName
+        if owner is not None:
+          new_turnier['turnier_owner'] = owner._gameName
+        else:
+          new_turnier['turnier_owner'] = 'deleted Account'
         result.append(new_turnier)
      return result
 
