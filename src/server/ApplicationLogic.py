@@ -187,6 +187,18 @@ class ApplicationLogic(object):
   def get_all_turniere(self):
     with TurnierMapper() as mapper:
       return mapper.find_all()
+    
+  def get_all_turniere_public(self):
+    with TurnierMapper() as mapper:
+      all_turniere =  mapper.find_all()
+
+    filterd_turniere = []
+
+    for turnier in all_turniere:
+      if turnier._access == 'public':
+         filterd_turniere.append(turnier)
+   
+    return filterd_turniere
 
   def get_turnier_by_id(self, id):
     all_user_in_turnier = self.get_user_by_turnier(id)
@@ -196,13 +208,15 @@ class ApplicationLogic(object):
       slots = str(len(all_user_in_turnier)) + '/' + str(turnier.get_slots())
         
       return {
-                'id': turnier.get_id(),
-                'name': turnier.get_name(),
-                'team_size': turnier.get_team_size(),
-                'turnier_owner': turnier.get_turnier_owner(),
-                'start_date': turnier.get_start_date(),
-                'slots': slots
-            }
+            'id': turnier.get_id(),
+            'name': turnier.get_name(),
+            'team_size': turnier.get_team_size(),
+            'turnier_owner': turnier.get_turnier_owner(),
+            'start_date': turnier.get_start_date(),
+            'access': turnier.get_access(),  
+            'phase': turnier.get_phase(),    
+            'slots': slots
+        }
     
   def get_all_turniere_from_user(self, user_id):
      result = []
@@ -216,7 +230,7 @@ class ApplicationLogic(object):
     
   def get_all_turniere_with_slots(self):
      result = []
-     all_turniere = self.get_all_turniere()
+     all_turniere = self.get_all_turniere_public()
      for turnier in all_turniere:
         new_turnier = self.get_turnier_by_id(turnier._id)
         owner = self.get_user_by_id(new_turnier['turnier_owner'])
@@ -232,6 +246,16 @@ class ApplicationLogic(object):
         if not self.validate_datetime_format(turnier._start_date):
             raise ValueError('Invalid date format. Expected format: DD.MM.JJJJ/hh:mm')
         
+        # Validierung der Felder 'access' und 'phase'
+        valid_access_values = ['public', 'unlisted', 'private']
+        valid_phase_values = ['pre', 'running', 'post']
+
+        if turnier.get_access() not in valid_access_values:
+          raise ValueError(f"Invalid access value. Expected one of {valid_access_values}.")
+         
+        if turnier.get_phase() not in valid_phase_values:
+          raise ValueError(f"Invalid phase value. Expected one of {valid_phase_values}.") 
+              
         new_id = self.create_id()
         turnier.set_id(new_id)
 
@@ -525,8 +549,8 @@ class ApplicationLogic(object):
           response = ('Keinen User gefunden', 404)  # 404 Not Found
       else:
           try:
-            userNew = log.refresh(_user._id)
-            response = (userNew, 200)  # 200 OK
+            
+            response = (_user, 200)  # 200 OK
           except Exception as e:
               # Fall 2: Der User ist in der Datenbank, aber die Anfrage an die externe API hat nicht funktioniert
               response = ('Token vorhanden, Anfrage an Riot fehlgeschlagen', 502)  # 502 Bad Gateway

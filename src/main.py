@@ -46,8 +46,11 @@ turnier = api.model('turnier', {
     'name': fields.String(attribute='_name'),
     'team_size': fields.Integer(attribute='_team_size'),
     'turnier_owner': fields.Integer(attribute='_turnier_owner'),
-    'start_date': fields.String(attribute='_start_date')
+    'start_date': fields.String(attribute='_start_date'),
+    'access': fields.String(attribute='_access'),  # Neu hinzugefügt
+    'phase': fields.String(attribute='_phase')     # Neu hinzugefügt
 })
+
 
 user_team = api.model('user_team', {
    'user_id': fields.Integer,

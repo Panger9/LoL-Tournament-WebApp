@@ -35,7 +35,8 @@ CREATE TABLE turniere (
   name varchar(100) NOT NULL,
   team_size int NOT NULL DEFAULT 8,
   turnier_owner int NOT NULL,
-  start_date varchar(50) NOT NULL
+  start_date varchar(50) NOT NULL,
+  access ENUM()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   
 

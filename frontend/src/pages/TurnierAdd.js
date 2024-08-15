@@ -15,6 +15,7 @@ const TurnierAdd = () => {
   const {user} = useContext(UserContext);
 
   const [turnierGröße, setTurniergröße] = useState('');
+  const [access, setAccess] = useState('')
   const [turnierName, setTurnierName] = useState('');
   const [turnierOwner, setTurnierOwner] = useState(0);
   const [turnierStartdate, setTurnierStartdate] = useState(null);
@@ -37,6 +38,7 @@ const TurnierAdd = () => {
       team_size: turnierGröße,
       turnier_owner: user.user_id,
       start_date: formattedDate,
+      access: access
     };
 
     const res = await fetch(`/lolturnier/turnier`, {
@@ -66,7 +68,8 @@ const TurnierAdd = () => {
           value={turnierName}
           onChange={(e) => setTurnierName(e.target.value)}
         />
-        <FormControl fullWidth required>
+        <Box sx={{display:"flex", gap:"15px"}}>
+        <FormControl sx={{flex:1}} required>
           <InputLabel id="demo-simple-select-label">Turniergröße</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -82,9 +85,23 @@ const TurnierAdd = () => {
             <MenuItem value={64}>64 Teams</MenuItem>
           </Select>
         </FormControl>
-        <LocalizationProvider dateAdapter={AdapterDateFns} locale={deDE} required>
+        <FormControl sx={{flex:1}}  required>
+          <InputLabel id="demo-simple-select-label">Sichtbarkeit</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={access}
+            label="Sichtbarkeit"
+            onChange={(e) => setAccess(e.target.value)}
+          >
+            <MenuItem value={'public'}>öffentlich</MenuItem>
+            <MenuItem value={'unlisted'}>ungelistet</MenuItem>
+          </Select>
+        </FormControl>
+        <LocalizationProvider  dateAdapter={AdapterDateFns} locale={deDE} required>
           <DateTimePicker
             required
+            
             label="Turnier Startdatum und -zeit"
             value={turnierStartdate}
             onChange={(newValue) => setTurnierStartdate(newValue)}
@@ -92,8 +109,11 @@ const TurnierAdd = () => {
             inputFormat="dd.MM.yyyy HH:mm"
             mask="__.__.____ __:__"
             slotProps={{ textField: (params) => <TextField {...params} required /> }}
+            sx={{flex:1}}
           />
         </LocalizationProvider>
+        </Box>
+        
         {error && <Typography color='error'>{error}</Typography>}
         <Button type="submit" variant='contained' disabled={!user.signedIn}>{loading ? 'lädt...' : 'Submit'}</Button>
       </form>

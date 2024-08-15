@@ -9,8 +9,8 @@ class TurnierMapper(Mapper):
         tuples = cursor.fetchall()
         result = []
 
-        for (id, name, team_size, turnier_owner, start_date) in tuples:
-            turnier = Turnier(id, name, team_size, turnier_owner, start_date)
+        for (id, name, team_size, turnier_owner, start_date, access, phase) in tuples:
+            turnier = Turnier(id, name, team_size, turnier_owner, start_date, access, phase)
             result.append(turnier)
 
         self._cnx.commit()
@@ -23,8 +23,8 @@ class TurnierMapper(Mapper):
         cursor.execute(f"SELECT * FROM turniere WHERE id={id}")
         tuple = cursor.fetchone()
         if tuple:
-            (id, name, team_size, turnier_owner, start_date) = tuple
-            result = Turnier(id, name, team_size, turnier_owner, start_date)
+            (id, name, team_size, turnier_owner, start_date, access, phase) = tuple
+            result = Turnier(id, name, team_size, turnier_owner, start_date, access, phase)
         else:
             result = None
 
@@ -37,8 +37,10 @@ class TurnierMapper(Mapper):
         cursor = self._cnx.cursor()
 
         cursor.execute(
-            "INSERT INTO turniere (id, name, team_size, turnier_owner, start_date) VALUES (%s, %s, %s, %s, %s)",
-            (turnier.get_id(), turnier.get_name(), turnier.get_team_size(), turnier.get_turnier_owner(), turnier.get_start_date())
+            "INSERT INTO turniere (id, name, team_size, turnier_owner, start_date, access, phase) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            (turnier.get_id(), turnier.get_name(), turnier.get_team_size(), turnier.get_turnier_owner(), 
+             turnier.get_start_date(), turnier.get_access(), turnier.get_phase())
         )
 
         self._cnx.commit()
@@ -49,8 +51,10 @@ class TurnierMapper(Mapper):
     def update(self, turnier):
         cursor = self._cnx.cursor()
         cursor.execute(
-            "UPDATE turniere SET name = %s, team_size = %s, turnier_owner = %s, start_date = %s WHERE id = %s",
-            (turnier.get_name(), turnier.get_team_size(), turnier.get_turnier_owner(), turnier.get_start_date(), turnier.get_id())
+            "UPDATE turniere SET name = %s, team_size = %s, turnier_owner = %s, start_date = %s, access = %s, phase = %s "
+            "WHERE id = %s",
+            (turnier.get_name(), turnier.get_team_size(), turnier.get_turnier_owner(), turnier.get_start_date(), 
+             turnier.get_access(), turnier.get_phase(), turnier.get_id())
         )
 
         self._cnx.commit()
