@@ -5,6 +5,21 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 const theme = createTheme({
+    components: {
+        MuiSvgIcon: {
+          styleOverrides: {
+            root: {
+              '@keyframes spin': {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(360deg)' },
+              },
+              '&.spin': {
+                animation: 'spin 2s linear infinite',
+              },
+            },
+          },
+        },
+      },
     palette: {
         mode: 'dark', // Setzt den Theme-Modus auf "dark"
         primary: {
@@ -14,6 +29,12 @@ const theme = createTheme({
         secondary: {
             main: "#b3404a", // Ein gedämpftes Rot für sekundäre Aktionen
             contrastText: "#ffffff", // Weißer Text für Kontrast auf gedämpftem Rot
+        },
+        error: {
+            main: "#9e3c3c"
+        },
+        success: {
+            main: "#498953"
         },
         background: {
             default: '#121212', // Stilvolleres, tiefes Schwarz für moderne Web-Apps

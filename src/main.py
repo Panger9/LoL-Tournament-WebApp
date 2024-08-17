@@ -248,7 +248,7 @@ class TurnierListOperationsByUser(Resource):
 
    def get(self, user_id):
       log = ApplicationLogic()
-      return log.get_all_turniere_from_user(user_id)
+      return log.get_my_tournaments(user_id)
    
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # TEAMS

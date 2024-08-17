@@ -49,7 +49,7 @@ const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role, te
 
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "row", gap: "15px", alignContent: "center", backgroundColor: "rgb(0,0,0,0.4)", padding: "10px 20px 10px 15px", borderRadius: "20px", maxWidth: "100%", justifyContent: "space-between", overflow: "hidden" }}>
+    <Box sx={{ display: "flex", flexDirection: "row", gap: "15px", alignContent: "center", backgroundColor: "rgb(0,0,0,0.4)", padding: role ? "10px 20px 10px 15px" : "10px 10px 10px 20px", borderRadius: "20px", maxWidth: "100%", justifyContent: "space-between", overflow: "hidden" }}>
       <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", overflow: "hidden" }}>
         <Box
           component="img"
@@ -88,6 +88,8 @@ const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role, te
           <Typography sx={{ ':hover': { color: "rgba(215,215,255,0.7)" }, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{name}</Typography>
         </a>
         <Typography sx={{ flex: 1, fontSize: "12px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }} color="textSecondary" variant="body2">{tier !== 'UNRANKED' ? tier + ' ' + rank : 'UNRANKED'}</Typography>
+        
+        {role ? 
         <Box sx={{ display: "flex", justifyContent: "right", flex: 0.2 }} >
           <Box
             component="img"
@@ -127,6 +129,8 @@ const PlayerinfoSmall = ({ name, tag, level, tier, rank, profileIconId, role, te
             ))}
           </Menu>
         </Box>
+        : ''}
+        
       </Box>
     </Box>
   );

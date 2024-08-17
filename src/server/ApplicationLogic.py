@@ -168,11 +168,11 @@ class ApplicationLogic(object):
      for user_turnier in user_turnier_entries:
         result_user_turnier.append(self.delete_user_from_turnier(user_id, user_turnier['turnier_id']))
 
-     with UserMapper() as mapper:
-        user = mapper.delete(user_id)
+     #with UserMapper() as mapper:
+       # user = mapper.delete(user_id)
       
      result = []
-     result.append(user)
+     #result.append(user)
      result.append(result_user_team)
      result.append(result_user_turnier)
 
@@ -207,7 +207,7 @@ class ApplicationLogic(object):
       turnier =  mapper.find_by_id(id)
       slots = str(len(all_user_in_turnier)) + '/' + str(turnier.get_slots())
         
-      return {
+      turnier =  {
             'id': turnier.get_id(),
             'name': turnier.get_name(),
             'team_size': turnier.get_team_size(),
@@ -217,27 +217,45 @@ class ApplicationLogic(object):
             'phase': turnier.get_phase(),    
             'slots': slots
         }
-    
-  def get_all_turniere_from_user(self, user_id):
-     result = []
-     all_user_turnier_entries = self.get_user_turnier_entries_by_user_id(user_id)
+   
+      owner = self.get_user_by_id(turnier['turnier_owner'])
+      if owner is not None:
+          turnier['turnier_owner'] = owner._gameName
+      else:
+          turnier['turnier_owner'] = 'deleted Account'
+          
+      return turnier
 
-     for entry in all_user_turnier_entries:
+  def get_turniere_by_owner_id(self, id):
+    with TurnierMapper() as mapper:
+      return mapper.find_by_owner_id(id)
+
+  def get_my_tournaments(self, user_id):
+    result = []
+    seen_ids = set()
+
+    all_user_turnier_entries = self.get_user_turnier_entries_by_user_id(user_id)  # alle Turniere als Teilnehmer
+    all_owned_turniere = self.get_turniere_by_owner_id(user_id)  # alle Turniere als Owner
+
+    for turnier in all_owned_turniere:
+        if turnier._id not in seen_ids:
+            turnier_with_slots = self.get_turnier_by_id(turnier._id)
+            result.append(turnier_with_slots)
+            seen_ids.add(turnier._id)
+
+    for entry in all_user_turnier_entries:
         turnier = self.get_turnier_by_id(entry['turnier_id'])
-        result.append(turnier)
-      
-     return result
+        if turnier['id'] not in seen_ids:
+            result.append(turnier)
+            seen_ids.add(turnier['id'])
+
+    return result
     
   def get_all_turniere_with_slots(self):
      result = []
      all_turniere = self.get_all_turniere_public()
      for turnier in all_turniere:
         new_turnier = self.get_turnier_by_id(turnier._id)
-        owner = self.get_user_by_id(new_turnier['turnier_owner'])
-        if owner is not None:
-          new_turnier['turnier_owner'] = owner._gameName
-        else:
-          new_turnier['turnier_owner'] = 'deleted Account'
         result.append(new_turnier)
      return result
 

@@ -1,4 +1,4 @@
-import {Box, Typography, Button, Dialog, Grid, Paper, Card} from '@mui/material'
+import {Box, Typography, Button, Dialog, Grid, Paper, Card, Snackbar} from '@mui/material'
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../App';
@@ -12,6 +12,7 @@ const TurnierDetails = () => {
   const {user} = useContext(UserContext)
 
   const [reload, setReload] = useState(false)
+  const [open, setOpen] = useState(false);
   const {data: turnier, isPending, error} = useGet(`/lolturnier/user-by-team-and-turnier/${TurnierId}`, [reload] )
   
 
@@ -22,6 +23,13 @@ const TurnierDetails = () => {
     setReload(!reload)
     
   }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
 
   const leaveTeam = async (User_id, Team_id, Turnier_id) => {
     const res = await fetch(`/lolturnier/user-team-turnier/${User_id}/${Team_id}/${Turnier_id}`, {
@@ -34,7 +42,7 @@ const TurnierDetails = () => {
     let isInTeam = false
     for(let i = 1; i < 7; i++){
       if (turnier[teamIndex] && turnier[teamIndex][i]) {
-        if(turnier[teamIndex][i].gameName === user.sumName){
+        if(turnier[teamIndex][i].puuid === user.puuid){
           isInTeam = true
         }
       } else {
@@ -44,14 +52,34 @@ const TurnierDetails = () => {
     return isInTeam
   }
 
+  async function copyToClip() {
+    let url = window.location.href
+    await navigator.clipboard.writeText(url);
+    setOpen(true)
+  } 
+
   return ( 
     <>
     {isPending && <LinearProgress></LinearProgress>}
     {error && <Typography color="error" >{error}</Typography>}
     
-    <Grid container spacing={3}  >
-      
 
+    {turnier && 
+    <Box sx={{display:"flex", marginBottom:"20px"}}>
+      <Button variant='contained' onClick={copyToClip}>Invite Link</Button>
+      <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message="Link erfolgreich kopiert"
+      />
+    </Box>
+    }
+    
+
+
+    <Grid container spacing={3}  >
+    
       {(turnier && user) && turnier.map((team, teamIndex) => (
         <Grid item xs={12} sm={6} lg={3} xl={1.5} key={teamIndex} >
           <Box sx={{backgroundColor:"#171717", borderRadius:"18px", display:"flex", flexDirection:"column", padding:"20px"}}>

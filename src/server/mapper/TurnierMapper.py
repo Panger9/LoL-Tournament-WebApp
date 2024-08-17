@@ -32,6 +32,21 @@ class TurnierMapper(Mapper):
         cursor.close()
 
         return result
+    
+    def find_by_owner_id(self, turnier_owner):
+        cursor = self._cnx.cursor()
+        cursor.execute(f"SELECT * FROM turniere WHERE turnier_owner={turnier_owner}")
+        tuples = cursor.fetchall()
+        result = []
+
+        for (id, name, team_size, turnier_owner, start_date, access, phase) in tuples:
+            turnier = Turnier(id, name, team_size, turnier_owner, start_date, access, phase)
+            result.append(turnier)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
 
     def insert(self, turnier):
         cursor = self._cnx.cursor()

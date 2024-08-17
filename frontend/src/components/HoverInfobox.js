@@ -7,7 +7,7 @@ const HoverInfobox = () => {
 
   return ( 
     <Box onClick={() => Navigate('/register')} sx={{
-      backgroundColor:"#db4747", 
+      backgroundColor:"error.main", 
       position:"fixed", 
       bottom:"50px", 
       padding:"12px 20px", 
@@ -15,8 +15,9 @@ const HoverInfobox = () => {
       borderRadius:"3px", 
       ":hover":{cursor:"pointer", scale:"1.02", backgroundColor:"#ee6565"}, 
       ":active":{backgroundColor:"#732a2a", },
-      transition:"0.1s"
-      }}>
+      transition:"0.15s "
+      }}
+      >
       <Typography variant="body2" color="#ffffff" >Du musst einen League of Legends Account verknüpfen, um Turnieren beizutreten und welche zu erstellen</Typography>
     </Box>
    );
