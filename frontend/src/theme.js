@@ -31,7 +31,8 @@ const theme = createTheme({
             contrastText: "#ffffff", // Weißer Text für Kontrast auf gedämpftem Rot
         },
         error: {
-            main: "#9e3c3c"
+            main: "#9e3c3c",
+            secondary: "#e23e3e"
         },
         success: {
             main: "#498953"

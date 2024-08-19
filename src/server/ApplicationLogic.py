@@ -460,6 +460,22 @@ class ApplicationLogic(object):
     response = self.riot_api.fetch_playerinfo(sum_id)
     return response
   
+  def get_profileIconId(self, puuid):
+     response = self.get_playerinfo2(puuid)
+     
+     if response is not None:
+        return response['profileIconId']
+     else:
+        return 'Spieler nicht gefunden',
+
+
+  def hasIconChanged(self, oldIconId, wantedIconId, puuid ):
+     newIconId = self.get_profileIconId(puuid)
+     if oldIconId != newIconId  and newIconId == wantedIconId:
+        return True
+     else:
+        return False
+  
   def get_playerinfo_important(self, sumName, tagLine):
     log = ApplicationLogic()
     response_all = {}

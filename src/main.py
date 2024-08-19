@@ -59,6 +59,13 @@ user_team = api.model('user_team', {
 
 })
 
+icon_comparison = api.model('icon_comparison', {
+   'oldIconId': fields.Integer,
+   'wantedIconId': fields.Integer,
+   'puuid': fields.String,
+
+})
+
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
 # Anfragen an die Datenbank
@@ -455,6 +462,15 @@ class RiotAPIc(Resource):
     def get(self, sum_id):
         log = ApplicationLogic()
         return log.get_playerinfo3(sum_id)
+    
+@lolturnier.route('/riot/has-icon-changed')
+class RiotAPIcD(Resource):
+
+    @lolturnier.expect(icon_comparison)
+    def post(self):
+        proposal = api.payload
+        log = ApplicationLogic()
+        return log.hasIconChanged(proposal['oldIconId'], proposal['wantedIconId'], proposal['puuid'])
 
 @lolturnier.route('/riot/get-playerinfo_important/<string:sumName>/<string:tagLine>')
 class RiotAPIe(Resource):

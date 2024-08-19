@@ -36,7 +36,8 @@ CREATE TABLE turniere (
   team_size int NOT NULL DEFAULT 8,
   turnier_owner int NOT NULL,
   start_date varchar(50) NOT NULL,
-  access ENUM()
+  access ENUM('public','unlisted','private'),
+  phase ENUM('pre','running','post')
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   
 
