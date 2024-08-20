@@ -109,7 +109,7 @@ const Header = () => {
               </Box>
 
 
-              {user.sumName ? <Box sx={{ maxWidth: "350px" }} ><Playerinfo name={user.sumName} tag={user.tagLine} tier={user.tier} level={user.level} profileIconId={user.profileIconId}></Playerinfo></Box> : ''}
+              {user.sumName ? <Box sx={{ maxWidth: "350px" }} ><Playerinfo rank={user.rank} name={user.sumName} tag={user.tagLine} tier={user.tier} level={user.level} profileIconId={user.profileIconId}></Playerinfo></Box> : ''}
             </Box> :
 
             <Link to='/register'>

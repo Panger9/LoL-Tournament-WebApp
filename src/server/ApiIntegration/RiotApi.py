@@ -1,5 +1,14 @@
-import requests
-from server.login import riot_key
+import requests, os
+
+
+# wenn wir in development sind, wird mit load_dotenv
+if os.getenv('GAE_ENV', '').startswith('standard'):
+    riot_key = os.getenv('RIOT_API_KEY')
+else:
+    from server.login import riot_api_key
+    riot_key = riot_api_key
+
+print(riot_key)
 
 class RiotAPIIntegration:
     def __init__(self):

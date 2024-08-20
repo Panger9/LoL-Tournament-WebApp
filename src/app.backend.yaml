@@ -19,3 +19,9 @@ handlers:
 - url: /.*
   script: auto
 
+env_variables:
+  RIOT_API_KEY: "RGAPI-fd37a73e-8aed-4244-8b26-18f929177be4"
+  DB_USER: "demo"
+  DB_PASSWORD: "cCgGuU99"
+  DB_HOST: "/cloudsql/lol-tournament-webapp:europe-west3:db-lol-tournament-webapp"
+  DB_NAME: "lolturnier"
